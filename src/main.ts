@@ -1,19 +1,22 @@
 import { timer } from './core/timer';
 import { defineSpriteSheet } from './core/sprites';
-import { FPS, tileUrl } from './core/constants';
+import { FPS, spriteSheetUrls } from './core/constants';
 import { getContext, drawImage } from './lib/canvas-helpers';
-import { onTileDefined } from './store/spritesheets/creators';
+import { onSpriteSheetRequest, onTileDefined } from './store/spritesheets/creators';
+import { getTile } from './store/spritesheets/selectors';
 import { store } from './store';
 import { pipe } from './lib/function-helpers';
 
 const main = (canvas: HTMLCanvasElement) => {
-  store.dispatch(onSpriteSheetRequest(tileUrl))
+  store.dispatch(onSpriteSheetRequest('overworld'));
 
-  loadImage(tileUrl)
-    .then(image => defineSpriteSheet(image, 16, 16))
-    .then(defineTile => defineTile('ground', 0, 0))
-    .then(onTileDefined)
-    .then(store.dispatch);
+  store.subscribe(() => console.log(getTile('ground')));
+
+  // loadImage(tileUrl)
+  //   .then(image => defineSpriteSheet(image, 16, 16))
+  //   .then(defineTile => defineTile('ground', 0, 0))
+  //   .then(onTileDefined)
+  //   .then(store.dispatch);
 
   // .then(() => {
 

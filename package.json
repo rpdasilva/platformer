@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "parcel -p 8080 index.html --public-url /"
+    "start": "parcel index.html"
   },
   "devDependencies": {
     "@types/redux-logger": "^3.0.5",

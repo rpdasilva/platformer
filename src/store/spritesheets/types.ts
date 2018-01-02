@@ -1,5 +1,5 @@
 export enum Sprites {
-  SHEET_ADDED = 'SHEET_ADDED',
+  SHEET_REQUESTED = 'SHEET_REQUESTED',
   TILE_DEFINED = 'TILE_DEFINED'
 };
 
