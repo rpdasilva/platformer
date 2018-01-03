@@ -1,1 +1,2 @@
-export const getTile = tileName => state => state.tiles.tileName;
+export const getTile = (tileName: string) =>
+  (store: any) => store.getState().tiles[tileName];

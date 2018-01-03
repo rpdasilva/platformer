@@ -9,10 +9,10 @@ const emptyState = () => ({
 //   ...state, ...payload
 // });
 
-const tileDefined = (state: TileMap, { payload }: AnyAction) => ({
-  ...state, ...payload
+const tilesDefined = (state: TileMap, { payload }: AnyAction) => ({
+  ...state, ...Object.assign({}, ...payload)
 })
 
 export const tiles = buildStrategy(emptyState(), {
-  [Sprites.TILE_DEFINED]: tileDefined
+  [Sprites.TILES_DEFINED]: tilesDefined
 });

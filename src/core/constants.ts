@@ -2,7 +2,7 @@ export const FPS = 1/60;
 
 export type AssetMap<T> = { [k: string]: T };
 
-export const spriteSheetUrls: AssetMap<Promise<string>>  = {
+export const spriteSheetUrls: AssetMap<Promise<any>>  = {
   overworld: import('../assets/sprites/overworld.json')
 };
 

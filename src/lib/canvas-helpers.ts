@@ -17,8 +17,10 @@ export const flipContext = (width: number, scaleY: 1 | -1 = -1) =>
     return context;
   }
 
-export const drawImage = (image: HTMLImageElement, ...drawImageArgs: any[]) =>
-  (context: CanvasRenderingContext2D) => {
+export const drawImage = (
+  image: HTMLImageElement | HTMLCanvasElement,
+  ...drawImageArgs: any[]
+) => (context: CanvasRenderingContext2D) => {
     (context.drawImage as any)(image, ...drawImageArgs);
     return context;
   }

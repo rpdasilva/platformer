@@ -1,4 +1,10 @@
-import { Tile } from '../store/spritesheets/types';
+import {
+  DefineTile,
+  Tile,
+  TileMap,
+  TileSpec
+} from '../store/spritesheets/types';
+import { getTile } from '../store/spritesheets/selectors';
 import {
   drawImage,
   flipContext,
@@ -22,7 +28,7 @@ export const makeTileBuffers = (
   y: number,
   width: number,
   height: number
-) => {
+): TileMap => {
   const tileBuffers: Tile = [1, -1].map((scaleY: 1 | -1) =>
     pipe(
       makeCanvas,
@@ -38,7 +44,8 @@ export const makeDefineTile = (
   image: HTMLImageElement,
   tileWidth: number,
   tileHeight: number
-) => (name: string, x: number, y: number) => {
+): DefineTile => (name: string, x: number, y: number) => {
+  console.log({ name, x, y, tileWidth, tileHeight });
   return makeTileBuffers(
     image,
     name,
@@ -47,3 +54,15 @@ export const makeDefineTile = (
     tileWidth,
     tileHeight);
 };
+
+export const defineTiles = (defineTile: DefineTile, tiles: TileSpec[]) => {
+  return tiles.map(({ name, index: [x, y] }) => defineTile(name, x, y));
+}
+
+export const drawTile = (store: any) => (tileName: string, x: number, y: number) =>
+  (context: CanvasRenderingContext2D) => {
+    const [tile] = getTile(tileName)(store);
+    console.log({tile, context});
+    return drawImage(context, x, y);
+  }
+

@@ -1,12 +1,19 @@
 export enum Sprites {
   SHEET_REQUESTED = 'SHEET_REQUESTED',
-  TILE_DEFINED = 'TILE_DEFINED'
+  TILES_DEFINED = 'TILES_DEFINED'
 };
+
+export type DefineTile = (name: string, x: number, y: number) => TileMap;
 
 export type Tile = CanvasRenderingContext2D[];
 
 export interface TileMap {
   [name: string]: Tile;
+}
+
+export interface TileSpec {
+  name: string;
+  index: [number, number];
 }
 
 export interface SpriteSheet {
