@@ -1,2 +1,4 @@
+import { Tile } from './types';
+
 export const getTile = (tileName: string) =>
-  (store: any) => store.getState().tiles[tileName];
+  (store: any): Tile => store.getState().tiles[tileName];

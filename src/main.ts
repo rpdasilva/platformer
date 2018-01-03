@@ -5,32 +5,18 @@ import { getContext, drawImage } from './lib/canvas-helpers';
 import { onSpriteSheetRequest } from './store/spritesheets/creators';
 import { getTile } from './store/spritesheets/selectors';
 import { store } from './store';
-import { pipe } from './lib/function-helpers';
+import { compose } from './lib/function-helpers';
 
 const main = (canvas: HTMLCanvasElement) => {
   const connectedDrawTile = drawTile(store);
   store.dispatch(onSpriteSheetRequest('overworld'));
 
   store.subscribe(() => {
-    pipe(
-      getContext,
-      connectedDrawTile('ground', 10, 10)
+    compose(
+      connectedDrawTile('ground', 2, 2),
+      getContext
     )(canvas)
   });
-
-  // loadImage(tileUrl)
-  //   .then(image => defineSpriteSheet(image, 16, 16))
-  //   .then(defineTile => defineTile('ground', 0, 0))
-  //   .then(onTileDefined)
-  //   .then(store.dispatch);
-
-  // .then(() => {
-
-  //   pipe(
-  //     getContext,
-  //     drawImage(image, 0, 0, 16, 16, 0, 0, 16, 16)
-  //   )(canvas)
-
 
   // });
   // let x = 0;

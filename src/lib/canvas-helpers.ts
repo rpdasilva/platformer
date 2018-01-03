@@ -6,14 +6,18 @@ export const makeCanvas = (height?: number, width?: number) => {
   return canvas;
 }
 
+export const getCanvasFromContext = (context: CanvasRenderingContext2D) =>
+  context.canvas;
+
 export const getContext = (canvas: HTMLCanvasElement, contextType = '2d') =>
   canvas.getContext(contextType) as CanvasRenderingContext2D;
 
 // Context Helpers
-export const flipContext = (width: number, scaleY: 1 | -1 = -1) =>
+export const flipContext = (width: number, scaleX: 1 | -1 = -1) =>
   (context: CanvasRenderingContext2D) => {
-    context.scale(scaleY, 1);
-    context.translate(scaleY * width, 0);
+    const translateX = { 1: 0, '-1': scaleX * width };
+    context.scale(scaleX, 1);
+    context.translate(translateX[scaleX], 0);
     return context;
   }
 

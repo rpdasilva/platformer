@@ -5,7 +5,7 @@ export enum Sprites {
 
 export type DefineTile = (name: string, x: number, y: number) => TileMap;
 
-export type Tile = CanvasRenderingContext2D[];
+export type Tile = HTMLCanvasElement[];
 
 export interface TileMap {
   [name: string]: Tile;

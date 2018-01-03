@@ -8,10 +8,11 @@ import { getTile } from '../store/spritesheets/selectors';
 import {
   drawImage,
   flipContext,
+  getCanvasFromContext,
   getContext,
   makeCanvas
 } from '../lib/canvas-helpers';
-import { pipe } from '../lib/function-helpers';
+import { compose } from '../lib/function-helpers';
 
 export const defineSpriteSheet = (
   image: HTMLImageElement,
@@ -29,13 +30,15 @@ export const makeTileBuffers = (
   width: number,
   height: number
 ): TileMap => {
-  const tileBuffers: Tile = [1, -1].map((scaleY: 1 | -1) =>
-    pipe(
-      makeCanvas,
+  const tileBuffers: Tile = [1, -1].map((scaleX: 1 | -1) => {
+    return compose(
+      getCanvasFromContext,
+      drawImage(image, x, y, width, height, 0, 0, width, height),
+      flipContext(width, scaleX),
       getContext,
-      flipContext(width, scaleY),
-      drawImage(image, x, y, width, height, 0, 0, width, height)
-    )(width, height));
+      makeCanvas
+    )(width, height);
+  });
 
   return { [name]: tileBuffers };
 }
@@ -45,7 +48,6 @@ export const makeDefineTile = (
   tileWidth: number,
   tileHeight: number
 ): DefineTile => (name: string, x: number, y: number) => {
-  console.log({ name, x, y, tileWidth, tileHeight });
   return makeTileBuffers(
     image,
     name,
@@ -62,7 +64,6 @@ export const defineTiles = (defineTile: DefineTile, tiles: TileSpec[]) => {
 export const drawTile = (store: any) => (tileName: string, x: number, y: number) =>
   (context: CanvasRenderingContext2D) => {
     const [tile] = getTile(tileName)(store);
-    console.log({tile, context});
-    return drawImage(context, x, y);
+    return drawImage(tile, x * tile.width, y * tile.height)(context);
   }
 
