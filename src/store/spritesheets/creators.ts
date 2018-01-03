@@ -12,8 +12,8 @@ export const onSpriteSheetRequest = (assetKey: string) =>
       .then(({ tilesKey }) => tileUrls[tilesKey])
       .then(loadImage);
 
-    const defineTile = Promise.all([spriteSheet, tileImage])
-      .then(([spec, image]) => defineSpriteSheet(image, spec.tileW, spec.tileH));
+    const defineTile = Promise.all([tileImage, spriteSheet])
+      .then(([image, spec]) => defineSpriteSheet(image, spec.tileW, spec.tileH));
 
     return Promise.all([defineTile, spriteSheet])
       .then(([defineTile, { tiles }]) => defineTiles(defineTile, tiles))

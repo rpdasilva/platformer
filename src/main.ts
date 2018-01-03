@@ -1,26 +1,26 @@
+import { compose } from 'ramda';
+
 import { timer } from './core/timer';
-import { drawTile } from './core/sprites';
+import { drawTile, drawTileRange } from './core/sprites';
 import { FPS, spriteSheetUrls } from './core/constants';
 import { getContext, drawImage } from './lib/canvas-helpers';
 import { onSpriteSheetRequest } from './store/spritesheets/creators';
 import { getTile } from './store/spritesheets/selectors';
 import { store } from './store';
-import { compose } from './lib/function-helpers';
 
 const main = (canvas: HTMLCanvasElement) => {
   const connectedDrawTile = drawTile(store);
+  const connectedDrawTileRange = drawTileRange(store);
+
   store.dispatch(onSpriteSheetRequest('overworld'));
 
   store.subscribe(() => {
     compose(
-      connectedDrawTile('ground', 2, 2),
+      connectedDrawTileRange('ground', 0, 25, 12, 14),
+      connectedDrawTileRange('sky', 0, 25, 0, 14),
       getContext
     )(canvas)
   });
-
-  // });
-  // let x = 0;
-  // let y = 0;
 
   // const stop = timer(deltaTime => {
   //   context.strokeStyle = 'red';

@@ -1,3 +1,5 @@
+import { compose, curry, range, xprod } from 'ramda';
+
 import {
   DefineTile,
   Tile,
@@ -12,7 +14,7 @@ import {
   getContext,
   makeCanvas
 } from '../lib/canvas-helpers';
-import { compose } from '../lib/function-helpers';
+import { fillRange } from '../lib/function-helpers';
 
 export const defineSpriteSheet = (
   image: HTMLImageElement,
@@ -36,8 +38,8 @@ export const makeTileBuffers = (
       drawImage(image, x, y, width, height, 0, 0, width, height),
       flipContext(width, scaleX),
       getContext,
-      makeCanvas
-    )(width, height);
+      curry(makeCanvas)(width)
+    )(height);
   });
 
   return { [name]: tileBuffers };
@@ -67,3 +69,21 @@ export const drawTile = (store: any) => (tileName: string, x: number, y: number)
     return drawImage(tile, x * tile.width, y * tile.height)(context);
   }
 
+export const drawTileRange = (store: any) =>
+(
+  tileName: string,
+  startX: number,
+  endX: number,
+  startY: number,
+  endY: number
+) =>
+(context: CanvasRenderingContext2D) => {
+  const cols: number[] = range(startX, endX);
+  const rows: number[] = range(startY, endY);
+
+  xprod(cols, rows).forEach(([x, y]: number[]) => {
+    drawTile(store)(tileName, x, y)(context);
+  });
+
+  return context;
+}
