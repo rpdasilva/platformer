@@ -3,7 +3,7 @@ import { loadImage } from '../../core/loaders/image';
 import { loadJson } from '../../core/loaders/json';
 import { defineSpriteSheet, defineTiles } from '../../core/sprites';
 import { spriteSheetUrls, tileUrls } from '../../core/constants';
-import { Sprites, SpriteSheet, TileMap } from "./types";
+import { Sprites, SpriteSheetSpec, TileMap } from "./types";
 
 export const onSpriteSheetRequest = (assetKey: string) =>
   (dispatch: Dispatch<any>) => {

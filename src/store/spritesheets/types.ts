@@ -16,13 +16,16 @@ export interface TileSpec {
   index: [number, number];
 }
 
-export interface SpriteSheet {
-  image: HTMLImageElement;
-  tileHeight: number;
-  tileWidth: number;
-  tiles: TileMap;
+export interface Animation {
+  name: string;
+  frameLen: number;
+  frames: string[];
 }
 
-export interface SpriteSheets {
-  [name: string]: SpriteSheet;
+export interface SpriteSheetSpec {
+  tilesKey: string;
+  tileW: number;
+  tileH: number;
+  tiles: TileSpec[];
+  animations: Animation[];
 }

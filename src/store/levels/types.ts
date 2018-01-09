@@ -21,7 +21,6 @@ export interface PatternGroup<T> {
 }
 
 export interface LevelSpec {
-  spriteSheet: string;
   patterns: {
     [patternName: string]: PatternGroup<Pattern>[];
   };
