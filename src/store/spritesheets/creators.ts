@@ -1,9 +1,20 @@
 import { Dispatch } from 'redux';
 import { loadImage } from '../../core/loaders/image';
-import { loadJson } from '../../core/loaders/json';
+// import { loadJson } from '../../core/loaders/json';
 import { defineSpriteSheet, defineTiles } from '../../core/sprites';
 import { spriteSheetUrls, tileUrls } from '../../core/constants';
-import { Sprites, SpriteSheetSpec, TileMap } from "./types";
+import { Sprites, TileMap } from "./types";
+
+export const onSpriteSheetsRequest = (spriteSheets: string[]) =>
+  (dispatch: Dispatch<any>) => {
+    const onResolvedSpriteSheets = spriteSheets
+      .map(onSpriteSheetRequest)
+      .map(dispatch);
+
+    Promise.all(onResolvedSpriteSheets)
+      .then(onSpriteSheetsLoaded)
+      .then(dispatch);
+  };
 
 export const onSpriteSheetRequest = (assetKey: string) =>
   (dispatch: Dispatch<any>) => {
@@ -20,6 +31,10 @@ export const onSpriteSheetRequest = (assetKey: string) =>
       .then(onTilesDefined)
       .then(dispatch);
   };
+
+export const onSpriteSheetsLoaded = () => ({
+  type: Sprites.SHEETS_LOADED
+});
 
 export const onTilesDefined = (tileMaps: TileMap[]) => ({
   type: Sprites.TILES_DEFINED,

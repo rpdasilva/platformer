@@ -5,7 +5,7 @@ import { Levels } from './types';
 const emptyState = () => ({});
 
 const levelReceived = (state: any, { payload: { name, level } }: AnyAction) => ({
-  ...state, { name, level }
+  ...state, ...{ [name]: level }
 })
 
 export const tiles = buildStrategy(emptyState(), {

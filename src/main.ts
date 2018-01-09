@@ -1,18 +1,17 @@
 import { compose } from 'ramda';
 
-import { timer } from './core/timer';
-import { drawTile, drawTileRange } from './core/sprites';
-import { FPS, spriteSheetUrls } from './core/constants';
-import { getContext, drawImage } from './lib/canvas-helpers';
-import { onSpriteSheetRequest } from './store/spritesheets/creators';
-import { getTile } from './store/spritesheets/selectors';
+// import { timer } from './core/timer';
+import { drawTileRange } from './core/sprites';
+import { /* FPS, */ spriteSheets } from './core/constants';
+import { getContext } from './lib/canvas-helpers';
+import { onSpriteSheetsRequest } from './store/spritesheets/creators';
 import { store } from './store';
 
 const main = (canvas: HTMLCanvasElement) => {
-  const connectedDrawTile = drawTile(store);
+  // const connectedDrawTile = drawTile(store);
   const connectedDrawTileRange = drawTileRange(store);
 
-  store.dispatch(onSpriteSheetRequest('overworld'));
+  store.dispatch(onSpriteSheetsRequest(spriteSheets));
 
   store.subscribe(() => {
     compose(
