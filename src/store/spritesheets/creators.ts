@@ -3,16 +3,19 @@ import { loadImage } from '../../core/loaders/image';
 // import { loadJson } from '../../core/loaders/json';
 import { defineSpriteSheet, defineTiles } from '../../core/sprites';
 import { spriteSheetUrls, tileUrls } from '../../core/constants';
+import { select } from '../../store';
+import { getAvailableSpriteSheets } from '../shared/selectors';
+import { onLevelsRequest } from '../levels/creators';
 import { Sprites, TileMap } from "./types";
 
-export const onSpriteSheetsRequest = (spriteSheets: string[]) =>
+export const onSpriteSheetsRequest = () =>
   (dispatch: Dispatch<any>) => {
-    const onResolvedSpriteSheets = spriteSheets
+    const onResolvedSpriteSheets = select(getAvailableSpriteSheets)
       .map(onSpriteSheetRequest)
       .map(dispatch);
 
     Promise.all(onResolvedSpriteSheets)
-      .then(onSpriteSheetsLoaded)
+      .then(onLevelsRequest)
       .then(dispatch);
   };
 

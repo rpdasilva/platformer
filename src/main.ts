@@ -1,24 +1,29 @@
-import { compose } from 'ramda';
+// import { compose } from 'ramda';
 
 // import { timer } from './core/timer';
-import { drawTileRange } from './core/sprites';
-import { /* FPS, */ spriteSheets } from './core/constants';
+// import { drawTileRange } from './core/sprites';
+// import { FPS } from './core/constants';
 import { getContext } from './lib/canvas-helpers';
+import { onLevelDraw } from './store/levels/creators';
+import { getLevel } from './store/levels/selectors';
 import { onSpriteSheetsRequest } from './store/spritesheets/creators';
-import { store } from './store';
+import { dispatch, select, store } from './store';
 
 const main = (canvas: HTMLCanvasElement) => {
-  // const connectedDrawTile = drawTile(store);
-  const connectedDrawTileRange = drawTileRange(store);
-
-  store.dispatch(onSpriteSheetsRequest(spriteSheets));
+  store.dispatch(onSpriteSheetsRequest());
 
   store.subscribe(() => {
-    compose(
-      connectedDrawTileRange('ground', 0, 25, 12, 14),
-      connectedDrawTileRange('sky', 0, 25, 0, 14),
-      getContext
-    )(canvas)
+    const context = getContext(canvas);
+
+    if (select(getLevel('1-1'))) {
+      store.dispatch(onLevelDraw('1-1', context));
+    }
+
+    // compose(
+    //   drawTileRange('ground', 0, 25, 12, 14),
+    //   drawTileRange('sky', 0, 25, 0, 14),
+    //   getContext
+    // )(canvas);
   });
 
   // const stop = timer(deltaTime => {

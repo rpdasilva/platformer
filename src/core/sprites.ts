@@ -1,4 +1,13 @@
-import { compose, curry, range, xprod } from 'ramda';
+import {
+  compose,
+  cond,
+  curry,
+  identity,
+  insert,
+  range,
+  T,
+  xprod
+} from 'ramda';
 
 import {
   DefineTile,
@@ -14,7 +23,8 @@ import {
   getContext,
   makeCanvas
 } from '../lib/canvas-helpers';
-import { fillRange } from '../lib/function-helpers';
+import { expandRange, lengthEq } from '../lib/function-helpers';
+import { select } from '../store';
 
 export const defineSpriteSheet = (
   image: HTMLImageElement,
@@ -63,26 +73,23 @@ export const defineTiles = (defineTile: DefineTile, tiles: TileSpec[]) => {
   return tiles.map(({ name, index: [x, y] }) => defineTile(name, x, y));
 }
 
-export const drawTile = (store: any) => (tileName: string, x: number, y: number) =>
+export const drawTile = (tileName: string, x: number, y: number) =>
   (context: CanvasRenderingContext2D) => {
-    const [tile] = getTile(tileName)(store);
+    const [tile] = select(getTile(tileName));
     return drawImage(tile, x * tile.width, y * tile.height)(context);
   }
 
-export const drawTileRange = (store: any) =>
-(
+export const drawTileRange = (
   tileName: string,
-  startX: number,
-  endX: number,
-  startY: number,
-  endY: number
+  ...tileRange: number[]
 ) =>
 (context: CanvasRenderingContext2D) => {
-  const cols: number[] = range(startX, endX);
-  const rows: number[] = range(startY, endY);
+  const [xStart, xLen, yStart, yLen] = expandRange(1, tileRange);
+  const cols: number[] = range(xStart, xStart + xLen);
+  const rows: number[] = range(yStart, yStart + yLen);
 
   xprod(cols, rows).forEach(([x, y]: number[]) => {
-    drawTile(store)(tileName, x, y)(context);
+    drawTile(tileName, x, y)(context);
   });
 
   return context;

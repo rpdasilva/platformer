@@ -17,6 +17,7 @@
     "@types/ramda": "^0.25.13",
     "ramda": "^0.25.0",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1"
   }
 }

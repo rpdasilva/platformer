@@ -4,10 +4,10 @@ import { Levels } from './types';
 
 const emptyState = () => ({});
 
-const levelReceived = (state: any, { payload: { name, level } }: AnyAction) => ({
-  ...state, ...{ [name]: level }
+const levelReceived = (state: any, { payload: { name, levelSpec } }: AnyAction) => ({
+  ...state, ...{ [name]: levelSpec }
 })
 
-export const tiles = buildStrategy(emptyState(), {
+export const levels = buildStrategy(emptyState(), {
   [Levels.LEVEL_RECEIVED]: levelReceived
 });
