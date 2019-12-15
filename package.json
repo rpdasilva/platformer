@@ -4,20 +4,19 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "parcel index.html"
-  },
-  "devDependencies": {
-    "@types/redux-logger": "^3.0.5",
-    "parcel-bundler": "^1.1.0",
-    "redux-logger": "^3.0.6",
-    "typescript": "^2.6.2"
+    "start": "parcel index.html --open"
   },
   "dependencies": {
-    "@types/node": "^8.0.57",
-    "@types/ramda": "^0.25.13",
-    "ramda": "^0.25.0",
-    "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0",
-    "reselect": "^3.0.1"
+    "ramda": "^0.26.1",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/ramda": "^0.26.38",
+    "@types/redux-logger": "^3.0.7",
+    "parcel-bundler": "^1.12.4",
+    "redux-logger": "^3.0.6",
+    "typescript": "^3.7.3"
   }
 }
