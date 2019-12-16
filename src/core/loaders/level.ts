@@ -1,3 +1,3 @@
-import { loadJson } from './json';
+import { levelUrls } from '../constants';
 
-export const loadLevel = (name: string) => loadJson(name);
+export const loadLevel = (name: string) => levelUrls[name];
