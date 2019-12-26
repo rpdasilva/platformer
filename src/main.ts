@@ -1,40 +1,41 @@
 
-import { loadLevel, loadBackgroundSprites } from './core/loaders';
-import { Compositor } from './core/compositor';
-import { createBackgroundLayer, createSpriteLayer } from './core/layers';
+import { loadLevel } from './core/loaders';
 import { createMario } from './core/entities';
-import { Timer } from './core/timer';
+import { Timer } from './core/Timer';
 import { getContext } from './lib/canvas';
+import { setupKeyboard } from './core/input';
+import { createCollisionLayer } from './core/layers';
 
 const main = (canvas: HTMLCanvasElement) => {
   const context = getContext(canvas);
 
   Promise.all([
     createMario(),
-    loadBackgroundSprites(),
     loadLevel('1-1')
   ])
-  .then(([mario, backgroundSprites, level]) => {
-      const compositor = new Compositor();
-      const backgroundLayer = createBackgroundLayer(
-        level.backgrounds,
-        backgroundSprites
-      );
+  .then(([mario, level]) => {
+      mario.pos.set(64, 64);
 
-      compositor.addLayer(backgroundLayer);
-      mario.position.set(64, 180);
-      mario.velocity.set(200, -600);
+      level.comp.addLayer(createCollisionLayer(level));
+      level.entities.add(mario);
 
-      const spriteLayer = createSpriteLayer(mario);
-      compositor.addLayer(spriteLayer);
+      const input = setupKeyboard(mario);
+      input.listenTo(window);
 
-      const gravity = 30;
+      ['mousedown', 'mousemove'].forEach(type => {
+        canvas.addEventListener(type, (event: MouseEvent) => {
+          if (event.buttons === 1) {
+            mario.vel.set(0, 0);
+            mario.pos.set(event.offsetX, event.offsetY);
+          }
+        });
+      });
+
       const timer = new Timer(
         1/60,
         (deltaTime: number) => {
-          compositor.draw(context);
-          mario.update(deltaTime);
-          mario.velocity.y += gravity;
+          level.update(deltaTime);
+          level.comp.draw(context);
         }
       );
 

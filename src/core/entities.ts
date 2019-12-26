@@ -1,20 +1,31 @@
-import { Entity } from './entity';
+import { Entity } from './Entity';
 import { loadMarioSprite } from './loaders';
+import { Spritesheet } from './Spritesheet';
+import { Jump } from './traits/jump';
+import { Move } from './traits/move';
+import { Velocity } from './traits/velocity';
 
-class Mario extends Entity {
-  constructor(private sprite) {
+export class Mario extends Entity {
+  move: Move;
+  jump: Jump;
+  velocity: Velocity;
+
+  constructor(private sprite: Spritesheet) {
     super();
   }
 
   draw(context: CanvasRenderingContext2D) {
-    this.sprite.draw('idle', context, this.position.x, this.position.y);
+    this.sprite.draw('idle', context, this.pos.x, this.pos.y);
   }
 
-  update(deltaTime: number) {
-    this.position.x += this.velocity.x * deltaTime;
-    this.position.y += this.velocity.y * deltaTime;
-  }
 }
 
 export const createMario = () =>
-  loadMarioSprite().then(sprite => new Mario(sprite));
+  loadMarioSprite().then(sprite => {
+    const mario = new Mario(sprite);
+    mario.size.set(14, 16);
+    mario.addTrait(new Move());
+    mario.addTrait(new Jump());
+    // mario.addTrait(new Velocity());
+    return mario;
+  });

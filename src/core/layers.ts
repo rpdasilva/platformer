@@ -1,37 +1,51 @@
-import { range } from 'ramda';
-
 import { getContext } from '../lib/canvas';
-import { Entity } from './entity';
-import { Spritesheet } from './spritesheet';
+import { Entity } from './Entity';
+import { Level } from './Level';
+import { Spritesheet } from './Spritesheet';
 
-const drawBackground = (
-  background: any,
-  context: CanvasRenderingContext2D,
-  sprites: Spritesheet
-) => {
-  background.ranges.forEach(([x1, x2, y1, y2]) =>
-    range(x1, x2).forEach(x =>
-      range(y1, y2).forEach(y =>
-        sprites.drawTile(background.tile, context, x, y)))
-  );
-}
-
-export const createBackgroundLayer = (backgrounds: any, sprites: Spritesheet) => {
+export const createBackgroundLayer = (level: Level, sprites: Spritesheet) => {
   const buffer = document.createElement('canvas');
   const backgroundContext = getContext(buffer);
   buffer.width = 256;
   buffer.height = 240;
 
-  backgrounds.forEach(background =>
-    drawBackground(
-      background,
-      backgroundContext,
-      sprites
-    )
-  );
+  level.tiles.forEach((tile, x, y) =>
+    sprites.drawTile(tile.name, backgroundContext, x, y));
 
-  return context => context.drawImage(buffer, 0, 0);
+  return (context: CanvasRenderingContext2D) =>
+    context.drawImage(buffer, 0, 0);
 };
 
-export const createSpriteLayer = (entity: Entity) =>
-  context => entity.draw(context);
+export const createSpriteLayer = (entities: Set<Entity>) =>
+  (context: CanvasRenderingContext2D) =>
+    entities.forEach(entity => entity.draw(context));
+
+export const createCollisionLayer = (level: Level) => {
+  const resolvedTiles = [];
+  const tileResolver = level.tileCollider.tiles;
+  const tileSize = tileResolver.tileSize;
+  const _getByIndex = tileResolver.getByIndex;
+
+  tileResolver.getByIndex = function getByIndex_CollisionLayer(x: number, y: number) {
+    resolvedTiles.push({ x, y });
+    return _getByIndex.call(tileResolver, x, y);
+  }
+
+  return (context: CanvasRenderingContext2D) => {
+    context.strokeStyle = 'blue';
+    resolvedTiles.forEach(({ x, y }) => {
+      context.beginPath();
+      context.rect(x * tileSize, y * tileSize, tileSize, tileSize);
+      context.stroke();
+    });
+
+    context.strokeStyle = 'red';
+    level.entities.forEach(({ pos, size }) => {
+      context.beginPath();
+      context.rect(pos.x, pos.y, size.x, size.y);
+      context.stroke();
+    })
+
+    resolvedTiles.length = 0;
+  };
+};

@@ -1,5 +1,5 @@
 import { spriteUrls } from '../constants';
-import { Spritesheet } from '../spritesheet';
+import { Spritesheet } from '../Spritesheet';
 import { loadImage } from './image';
 
 export const loadMarioSprite = () =>

@@ -1,4 +1,11 @@
 export const FPS = 1/60;
+export const KEY_PRESSED = 1;
+export const KEY_RELEASED = 0;
+export enum KEY_MAP {
+  SPACE = 'Space',
+  RIGHT = 'ArrowRight',
+  LEFT = 'ArrowLeft'
+}
 
 export type AssetMap<T> = { [k: string]: T };
 
