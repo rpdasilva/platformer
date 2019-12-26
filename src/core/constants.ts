@@ -17,7 +17,8 @@ export const levelUrls: AssetMap<Promise<any>>  = {
 };
 
 export const spriteSheetUrls: AssetMap<Promise<any>>  = {
-  overworld: Promise.resolve(require('../assets/sprites/overworld.json'))
+  overworld: Promise.resolve(require('../assets/sprites/overworld.json')),
+  underworld: Promise.resolve(require('../assets/sprites/underworld.json'))
 };
 
 export const spriteUrls: AssetMap<Promise<string>> = {

@@ -1,10 +1,13 @@
 
-import { loadLevel } from './core/loaders';
+import { Camera } from './core/Camera';
 import { createMario } from './core/entities';
-import { Timer } from './core/Timer';
-import { getContext } from './lib/canvas';
 import { setupKeyboard } from './core/input';
 import { createCollisionLayer } from './core/layers';
+import { createCameraLayer } from './core/layers';
+import { loadLevel } from './core/loaders';
+import { Timer } from './core/Timer';
+import { getContext } from './lib/canvas';
+import { debugMouseControls } from './lib/debug';
 
 const main = (canvas: HTMLCanvasElement) => {
   const context = getContext(canvas);
@@ -14,33 +17,29 @@ const main = (canvas: HTMLCanvasElement) => {
     loadLevel('1-1')
   ])
   .then(([mario, level]) => {
-      mario.pos.set(64, 64);
+    const camera = new Camera();
 
-      level.comp.addLayer(createCollisionLayer(level));
-      level.entities.add(mario);
+    mario.pos.set(64, 64);
 
-      const input = setupKeyboard(mario);
-      input.listenTo(window);
+    level.comp.addLayer(createCollisionLayer(level));
+    level.comp.addLayer(createCameraLayer(camera));
+    level.entities.add(mario);
 
-      ['mousedown', 'mousemove'].forEach(type => {
-        canvas.addEventListener(type, (event: MouseEvent) => {
-          if (event.buttons === 1) {
-            mario.vel.set(0, 0);
-            mario.pos.set(event.offsetX, event.offsetY);
-          }
-        });
-      });
+    const input = setupKeyboard(mario);
+    input.listenTo(window);
 
-      const timer = new Timer(
-        1/60,
-        (deltaTime: number) => {
-          level.update(deltaTime);
-          level.comp.draw(context);
-        }
-      );
+    debugMouseControls(canvas, mario, camera);
 
-      timer.start();
-    })
+    const timer = new Timer(
+      1/60,
+      (deltaTime: number) => {
+        level.update(deltaTime);
+        level.comp.draw(context, camera);
+      }
+    );
+
+    timer.start();
+  });
 };
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;
