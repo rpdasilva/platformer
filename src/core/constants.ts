@@ -1,10 +1,25 @@
 export const FPS = 1/60;
 export const KEY_PRESSED = 1;
 export const KEY_RELEASED = 0;
-export enum KEY_MAP {
+export enum KeyMap {
   SPACE = 'Space',
   RIGHT = 'ArrowRight',
-  LEFT = 'ArrowLeft'
+  LEFT = 'ArrowLeft',
+  A = 'KeyA',
+  D = 'KeyD',
+  O = 'KeyO',
+  P = 'KeyP'
+}
+export enum Sides {
+  TOP = 'top',
+  RIGHT = 'right',
+  BOTTOM = 'bottom',
+  LEFT = 'left'
+}
+
+export enum Drag {
+  HIGH = 1/2500,
+  LOW = 1/5500
 }
 
 export type AssetMap<T> = { [k: string]: T };
@@ -17,6 +32,7 @@ export const levelUrls: AssetMap<Promise<any>>  = {
 };
 
 export const spriteSheetUrls: AssetMap<Promise<any>>  = {
+  mario: Promise.resolve(require('../assets/sprites/mario.json')),
   overworld: Promise.resolve(require('../assets/sprites/overworld.json')),
   underworld: Promise.resolve(require('../assets/sprites/underworld.json'))
 };

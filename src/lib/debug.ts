@@ -1,5 +1,6 @@
 import { Entity } from '../core/Entity';
 import { Camera } from '../core/Camera';
+import { Level } from '../core/Level';
 
 export const debugMouseControls = (
   canvas: HTMLCanvasElement,
@@ -32,3 +33,62 @@ export const debugMouseControls = (
     });
   });
 }
+
+export const createDebugCollisionLayer = (level: Level) => {
+  const resolvedTiles = [];
+  const tileResolver = level.tileCollider.tiles;
+  const tileSize = tileResolver.tileSize;
+  const _getByIndex = tileResolver.getByIndex;
+
+  tileResolver.getByIndex = function getByIndex_CollisionLayer(x: number, y: number) {
+    resolvedTiles.push({ x, y });
+    return _getByIndex.call(tileResolver, x, y);
+  }
+
+  return (
+    context: CanvasRenderingContext2D,
+    camera: Camera
+  ) => {
+    context.strokeStyle = 'blue';
+    resolvedTiles.forEach(({ x, y }) => {
+      context.beginPath();
+      context.rect(
+        x * tileSize - camera.pos.x,
+        y * tileSize - camera.pos.y,
+        tileSize,
+        tileSize
+      );
+      context.stroke();
+    });
+
+    context.strokeStyle = 'red';
+    level.entities.forEach(({ pos, size }) => {
+      context.beginPath();
+      context.rect(
+        pos.x - camera.pos.x,
+        pos.y - camera.pos.y,
+        size.x,
+        size.y
+      );
+      context.stroke();
+    })
+
+    resolvedTiles.length = 0;
+  };
+};
+
+export const createDebugCameraLayer = (cameraToDraw: Camera) =>
+  (
+    context: CanvasRenderingContext2D,
+    fromCamera: Camera
+  ) => {
+    context.strokeStyle = 'purple';
+    context.beginPath();
+    context.rect(
+      cameraToDraw.pos.x - fromCamera.pos.x,
+      cameraToDraw.pos.y - fromCamera.pos.y,
+      cameraToDraw.size.x,
+      cameraToDraw.size.y
+    );
+    context.stroke();
+  };

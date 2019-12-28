@@ -7,7 +7,11 @@ export class Compositor {
   ) => void> = [];
 
   addLayer(layer: any) {
-    this.layers.push(layer);
+    this.addLayers(layer);
+  }
+
+  addLayers(...layers: any[]) {
+    this.layers.push(...layers);
   }
 
   draw(

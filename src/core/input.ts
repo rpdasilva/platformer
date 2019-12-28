@@ -1,22 +1,23 @@
-import { KEY_MAP } from './constants';
-// import { Entity } from './entity';
+import { KeyMap } from './constants';
 import { Mario } from './entities';
 import { Keyboard } from './Keyboard';
 
-export const setupKeyboard = (entity: Mario) => {
+export const setupKeyboard = (mario: Mario) => {
   const input = new Keyboard();
 
-  input.addMapping(KEY_MAP.SPACE, keyState => {
+  input.addMapping(KeyMap.P, keyState => {
     keyState
-      ? entity.jump.start()
-      : entity.jump.cancel();
+      ? mario.jump.start()
+      : mario.jump.cancel();
   });
 
-  input.addMapping(KEY_MAP.RIGHT, keyState =>
-    entity.move.dir = keyState);
+  input.addMapping(KeyMap.O, keyState => mario.turbo(keyState));
 
-  input.addMapping(KEY_MAP.LEFT, keyState =>
-    entity.move.dir = -keyState);
+  input.addMapping(KeyMap.D, keyState =>
+    mario.move.dir += keyState ? 1 : -1);
+
+  input.addMapping(KeyMap.A, keyState =>
+    mario.move.dir += keyState ? -1 : 1);
 
   return input
 }

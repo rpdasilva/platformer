@@ -4,11 +4,15 @@ import { Entity } from './Entity';
 import { TileCollider } from './TileCollider';
 
 export class Level {
-  gravity = 2000;
+  gravity = 1500;
+  totalTime = 0;
   comp = new Compositor();
   entities = new Set<Entity>();
-  tiles = new Matrix();
-  tileCollider = new TileCollider(this.tiles);
+  tileCollider: TileCollider;
+
+  setCollisionGrid(matrix: Matrix) {
+    this.tileCollider = new TileCollider(matrix);
+  }
 
   update(deltaTime: number) {
     this.entities.forEach(entity => {
@@ -22,5 +26,7 @@ export class Level {
 
       entity.vel.y += this.gravity * deltaTime;
     });
+
+    this.totalTime += deltaTime;
   }
 }

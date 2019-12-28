@@ -1,33 +1,86 @@
-import { range } from 'ramda';
+import { flatten, range } from 'ramda';
 
 import { levelUrls } from '../constants';
+import { Matrix } from '../math';
+import { Patterns, Range, Tile } from '../types';
 import { createBackgroundLayer, createSpriteLayer } from '../layers';
 import { Level } from '../Level';
 import { loadSpritesheet } from './spritesheet';
 
-const createTiles = (level: Level, backgrounds) => {
-  const applyRange = (background, xStart, xLength, yStart, yLength) => {
-    range(xStart, xStart + xLength).forEach(x =>
-      range(yStart, yStart + yLength).forEach(y =>
-        level.tiles.set(x, y, {
-          name: background.tile,
-          type: background.type
-        })));
-  };
+const createSpan = (
+  xStart: number,
+  xLength: number,
+  yStart: number,
+  yLength: number
+) =>  flatten(
+  range(xStart, xStart + xLength).map(x =>
+    range(yStart, yStart + yLength).map(y => ({ x, y }))
+  )
+);
 
-  backgrounds.forEach(background =>
-    background.ranges.forEach(range => {
-      const rangeArgs: {
-        [key: number]: [number, number, number, number]
-      } = {
-        4: range,
-        3: [range[0], range[1], range[2], 1],
-        2: [range[0], 1, range[1], 1]
-      };
+const expandRange = (range: Range) => {
+  const rangeArgs: Range = [
+    range[0],
+    range[2] !== undefined ? range[1] : 1,
+    range[2] !== undefined ? range[2] : range[1],
+    range[3] !== undefined ? range[3] : 1
+  ];
 
-      applyRange(background, ...rangeArgs[range.length]);
-    }));
+  return createSpan(...rangeArgs);
+}
+
+const expandRanges = (ranges: Range[]) => flatten(ranges.map(expandRange));
+
+const expandTiles = (
+  tiles: Tile[],
+  patterns: Patterns
+) => {
+  const walkTiles = (tiles, offsetX, offsetY) =>
+    flatten(tiles.map(tile =>
+      expandRanges(tile.ranges)
+        .map(({ x, y }) => {
+          const adjustedX = x + offsetX;
+          const adjustedY = y + offsetY;
+
+          if (tile.pattern) {
+            const pattern = patterns[tile.pattern];
+            return walkTiles(
+              pattern.tiles,
+              adjustedX,
+              adjustedY
+            );
+          } else {
+            return {
+              tile,
+              x: adjustedX,
+              y: adjustedY
+            };
+          }
+        })
+    ));
+
+  return walkTiles(tiles, 0, 0);
 };
+
+const createCollisionGrid = (tiles: Tile[], patterns: Patterns) => {
+  const grid = new Matrix();
+
+  expandTiles(tiles, patterns)
+    .forEach(({ tile, x, y }) => grid.set(x, y, { type: tile.type })
+  );
+
+  return grid;
+}
+
+const createBackgroundGrid = (tiles: Tile[], patterns: Patterns) => {
+  const grid = new Matrix();
+
+  expandTiles(tiles, patterns)
+    .forEach(({ tile, x, y }) => grid.set(x, y, { name: tile.name })
+  );
+
+  return grid;
+}
 
 export const loadLevel = (name: string) =>
   levelUrls[name].then(levelSpec => Promise.all([
@@ -37,16 +90,33 @@ export const loadLevel = (name: string) =>
   .then(([levelSpec, backgroundSprites]) => {
     const level = new Level();
 
-    createTiles(level, levelSpec.backgrounds)
-
-    const backgroundLayer = createBackgroundLayer(
-      level,
-      backgroundSprites
+    const mergedTiles = flatten(
+      levelSpec.layers.map(layer => layer.tiles)
     );
-    level.comp.addLayer(backgroundLayer);
+    console.log(mergedTiles);
+    const collisionGrid = createCollisionGrid(
+      mergedTiles,
+      levelSpec.patterns
+    );
+    level.setCollisionGrid(collisionGrid);
+
+    levelSpec.layers.forEach(layer => {
+      const backgroundGrid = createBackgroundGrid(
+        layer.tiles,
+        levelSpec.patterns
+      );
+
+      const backgroundLayer = createBackgroundLayer(
+        level,
+        backgroundGrid,
+        backgroundSprites
+      );
+
+      level.comp.addLayer(backgroundLayer);
+    });
 
     const spriteLayer = createSpriteLayer(level.entities);
-    level.comp.addLayer(spriteLayer);
+    level.comp.addLayers(spriteLayer);
 
     return level;
   });

@@ -6,6 +6,8 @@ export class Trait {
   update(context: Entity, deltaTime: number) {
     console.warn('Unhandled update call', deltaTime, context);
   }
+
+  obstruct(context: Entity, side: string) {}
 }
 
 export abstract class Entity {
@@ -23,5 +25,9 @@ export abstract class Entity {
 
   update(deltaTime: number) {
     this.traits.forEach(trait => trait.update(this, deltaTime));
+  }
+
+  obstruct(side: string) {
+    this.traits.forEach(trait => trait.obstruct(this, side));
   }
 }
