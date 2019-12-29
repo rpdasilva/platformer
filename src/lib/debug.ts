@@ -62,11 +62,11 @@ export const createDebugCollisionLayer = (level: Level) => {
     });
 
     context.strokeStyle = 'red';
-    level.entities.forEach(({ pos, size }) => {
+    level.entities.forEach(({ size, bounds }) => {
       context.beginPath();
       context.rect(
-        pos.x - camera.pos.x,
-        pos.y - camera.pos.y,
+        bounds.left - camera.pos.x,
+        bounds.top - camera.pos.y,
         size.x,
         size.y
       );

@@ -82,6 +82,39 @@ const createBackgroundGrid = (tiles: Tile[], patterns: Patterns) => {
   return grid;
 }
 
+const setupCollistion = (levelSpec, level: Level) => {
+  const mergedTiles = flatten(
+    levelSpec.layers.map(layer => layer.tiles)
+  );
+
+  const collisionGrid = createCollisionGrid(
+    mergedTiles,
+    levelSpec.patterns
+  );
+  level.setCollisionGrid(collisionGrid);
+}
+
+const setupBackground = (
+  levelSpec,
+  backgroundSprites,
+  level: Level
+) => {
+  levelSpec.layers.forEach(layer => {
+    const backgroundGrid = createBackgroundGrid(
+      layer.tiles,
+      levelSpec.patterns
+    );
+
+    const backgroundLayer = createBackgroundLayer(
+      level,
+      backgroundGrid,
+      backgroundSprites
+    );
+
+    level.comp.addLayer(backgroundLayer);
+  });
+};
+
 export const loadLevel = (name: string) =>
   levelUrls[name].then(levelSpec => Promise.all([
     levelSpec,
@@ -90,30 +123,8 @@ export const loadLevel = (name: string) =>
   .then(([levelSpec, backgroundSprites]) => {
     const level = new Level();
 
-    const mergedTiles = flatten(
-      levelSpec.layers.map(layer => layer.tiles)
-    );
-    console.log(mergedTiles);
-    const collisionGrid = createCollisionGrid(
-      mergedTiles,
-      levelSpec.patterns
-    );
-    level.setCollisionGrid(collisionGrid);
-
-    levelSpec.layers.forEach(layer => {
-      const backgroundGrid = createBackgroundGrid(
-        layer.tiles,
-        levelSpec.patterns
-      );
-
-      const backgroundLayer = createBackgroundLayer(
-        level,
-        backgroundGrid,
-        backgroundSprites
-      );
-
-      level.comp.addLayer(backgroundLayer);
-    });
+    setupCollistion(levelSpec, level);
+    setupBackground(levelSpec, backgroundSprites, level);
 
     const spriteLayer = createSpriteLayer(level.entities);
     level.comp.addLayers(spriteLayer);

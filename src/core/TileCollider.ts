@@ -3,12 +3,15 @@ import { Entity } from './Entity';
 import { Matrix } from './math';
 import { TileResolver } from './TileResolver';
 
-const optimizeDirection = (dir: 'x' | 'y', entity: Entity) =>
-  entity.vel[dir] > 0
-    ? entity.pos[dir] + entity.size[dir]
-    : entity.vel[dir] < 0
-      ? entity.pos[dir]
-      : undefined;
+const getSideByDirection = (dir: 'x' | 'y', entity: Entity) => {
+  const sides = {
+    x: v => v > 0 ? 'right' : v < 0 ? 'left' : undefined,
+    y: v => v > 0 ? 'bottom' : v < 0 ? 'top' : undefined,
+  };
+
+  const side = sides[dir](entity.vel[dir]);
+  return entity.bounds[side];
+}
 
 export class TileCollider {
   tiles: TileResolver;
@@ -18,7 +21,7 @@ export class TileCollider {
   }
 
   checkX(entity: Entity) {
-    const x = optimizeDirection('x', entity);
+    const x = getSideByDirection('x', entity);
 
     if (!x) {
       return;
@@ -27,8 +30,8 @@ export class TileCollider {
     const matches = this.tiles.searchByRange(
       x,
       x,
-      entity.pos.y,
-      entity.pos.y + entity.size.y,
+      entity.bounds.top,
+      entity.bounds.bottom,
     );
 
     matches.forEach(match => {
@@ -37,29 +40,32 @@ export class TileCollider {
       }
 
       if (entity.vel.x > 0) {
-        if (entity.pos.x + entity.size.x > match.x1) {
-          entity.pos.x = match.x1 - entity.size.x;
+        if (entity.bounds.right > match.x1) {
+          entity.bounds.right = match.x1;
           entity.vel.x = 0;
+
+          entity.obstruct(Sides.RIGHT);
         }
       } else if (entity.vel.x < 0) {
-        if (entity.pos.x < match.x2) {
-          entity.pos.x = match.x2;
+        if (entity.bounds.left < match.x2) {
+          entity.bounds.left = match.x2;
           entity.vel.x = 0;
+          entity.obstruct(Sides.LEFT);
         }
       }
-    })
+    });
   }
 
   checkY(entity: Entity) {
-    const y = optimizeDirection('y', entity);
+    const y = getSideByDirection('y', entity);
 
     if (!y) {
       return;
     }
 
     const matches = this.tiles.searchByRange(
-      entity.pos.x,
-      entity.pos.x + entity.size.x,
+      entity.bounds.left,
+      entity.bounds.right,
       y,
       y
     );
@@ -70,14 +76,14 @@ export class TileCollider {
       }
 
       if (entity.vel.y > 0) {
-        if (entity.pos.y + entity.size.y > match.y1) {
-          entity.pos.y = match.y1 - entity.size.y;
+        if (entity.bounds.bottom > match.y1) {
+          entity.bounds.bottom = match.y1;
           entity.vel.y = 0;
           entity.obstruct(Sides.BOTTOM);
         }
       } else if (entity.vel.y < 0) {
-        if (entity.pos.y < match.y2) {
-          entity.pos.y = match.y2;
+        if (entity.bounds.top < match.y2) {
+          entity.bounds.top = match.y2;
           entity.vel.y = 0;
           entity.obstruct(Sides.TOP);
         }

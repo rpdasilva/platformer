@@ -32,6 +32,8 @@ export const levelUrls: AssetMap<Promise<any>>  = {
 };
 
 export const spriteSheetUrls: AssetMap<Promise<any>>  = {
+  goomba: Promise.resolve(require('../assets/sprites/goomba.json')),
+  koopa: Promise.resolve(require('../assets/sprites/koopa.json')),
   mario: Promise.resolve(require('../assets/sprites/mario.json')),
   overworld: Promise.resolve(require('../assets/sprites/overworld.json')),
   underworld: Promise.resolve(require('../assets/sprites/underworld.json'))

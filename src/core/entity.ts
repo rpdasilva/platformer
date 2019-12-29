@@ -1,3 +1,4 @@
+import { BoundingBox } from './BoundingBox';
 import { Vec2 } from './math';
 
 export class Trait {
@@ -14,7 +15,10 @@ export abstract class Entity {
   pos = new Vec2(0, 0);
   vel = new Vec2(0, 0);
   size = new Vec2(0, 0);
+  offset = new Vec2(0, 0);
+  bounds = new BoundingBox(this.pos, this.size, this.offset);
   traits: Trait[] = [];
+  lifetime = 0;
 
   abstract draw(context: CanvasRenderingContext2D): void;
 
@@ -25,6 +29,7 @@ export abstract class Entity {
 
   update(deltaTime: number) {
     this.traits.forEach(trait => trait.update(this, deltaTime));
+    this.lifetime += deltaTime;
   }
 
   obstruct(side: string) {

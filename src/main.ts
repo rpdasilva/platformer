@@ -1,5 +1,5 @@
 import { Camera } from './core/Camera';
-import { createMario } from './core/entities';
+import { loadEntities } from './core/entities';
 import { setupKeyboard } from './core/input';
 import { loadLevel } from './core/loaders';
 import { Timer } from './core/Timer';
@@ -14,14 +14,23 @@ const main = (canvas: HTMLCanvasElement) => {
   const context = getContext(canvas);
 
   Promise.all([
-    createMario(),
+    loadEntities(),
     loadLevel('1-1')
   ])
-  .then(([mario, level]) => {
+  .then(([entity, level]) => {
     const camera = new Camera();
 
+    const mario = entity.mario();
     mario.pos.set(64, 64);
 
+    const goomba = entity.goomba();
+    goomba.pos.x = 220;
+
+    const koopa = entity.koopa();
+    koopa.pos.x = 260;
+
+    level.entities.add(goomba);
+    level.entities.add(koopa);
     level.entities.add(mario);
 
     level.comp.addLayers(

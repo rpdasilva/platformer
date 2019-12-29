@@ -1,6 +1,6 @@
 import { Drag } from '../constants';
 import { Entity, Trait } from '../Entity';
-import { Mario } from '../entities';
+import { Mario } from '../entities/Mario';
 
 export class Move extends Trait {
   dir = 0;

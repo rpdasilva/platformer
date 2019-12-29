@@ -1,17 +1,17 @@
 import { Camera } from './Camera';
 
 export class Compositor {
-  layers: Array<(
+  layers = new Set<(
     context: CanvasRenderingContext2D,
     camera?: Camera
-  ) => void> = [];
+  ) => void>();
 
   addLayer(layer: any) {
     this.addLayers(layer);
   }
 
   addLayers(...layers: any[]) {
-    this.layers.push(...layers);
+    layers.forEach(layer => this.layers.add(layer));
   }
 
   draw(
