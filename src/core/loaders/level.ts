@@ -7,6 +7,7 @@ import { createBackgroundLayer, createSpriteLayer } from '../layers';
 import { Level } from '../Level';
 import { loadSpritesheet } from './spritesheet';
 
+
 const createSpan = (
   xStart: number,
   xLength: number,
@@ -115,7 +116,23 @@ const setupBackground = (
   });
 };
 
-export const loadLevel = (name: string) =>
+const setupEntities = (
+  levelSpec,
+  level: Level,
+  entityFactory
+) => {
+  levelSpec.entities
+    .forEach(({ name, pos: [x, y] }) => {
+      const entity = entityFactory[name]();
+      entity.pos.set(x, y);
+      level.entities.add(entity);
+    });
+
+  const spriteLayer = createSpriteLayer(level.entities);
+  level.comp.addLayer(spriteLayer);
+}
+
+export const createLevelLoader = entityFactory => (name: string) =>
   levelUrls[name].then(levelSpec => Promise.all([
     levelSpec,
     loadSpritesheet(levelSpec.spritesheet)
@@ -125,9 +142,7 @@ export const loadLevel = (name: string) =>
 
     setupCollistion(levelSpec, level);
     setupBackground(levelSpec, backgroundSprites, level);
-
-    const spriteLayer = createSpriteLayer(level.entities);
-    level.comp.addLayers(spriteLayer);
+    setupEntities(levelSpec, level, entityFactory);
 
     return level;
   });

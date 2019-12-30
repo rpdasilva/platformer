@@ -1,7 +1,7 @@
 import { Camera } from './core/Camera';
 import { loadEntities } from './core/entities';
 import { setupKeyboard } from './core/input';
-import { loadLevel } from './core/loaders';
+import { createLevelLoader } from './core/loaders';
 import { Timer } from './core/Timer';
 import { getContext } from './lib/canvas';
 
@@ -10,52 +10,42 @@ import {
   createDebugCollisionLayer
 } from './lib/debug';
 
-const main = (canvas: HTMLCanvasElement) => {
+
+const main = async (canvas: HTMLCanvasElement) => {
   const context = getContext(canvas);
 
-  Promise.all([
-    loadEntities(),
-    loadLevel('1-1')
-  ])
-  .then(([entity, level]) => {
-    const camera = new Camera();
+  const entityFactory = await loadEntities();
+  const loadLevel = createLevelLoader(entityFactory);
+  const level = await loadLevel('1-1');
 
-    const mario = entity.mario();
-    mario.pos.set(64, 64);
+  const camera = new Camera();
 
-    const goomba = entity.goomba();
-    goomba.pos.x = 220;
+  const mario = entityFactory.mario();
+  mario.pos.set(64, 64);
+  level.entities.add(mario);
 
-    const koopa = entity.koopa();
-    koopa.pos.x = 260;
+  level.comp.addLayers(
+    createDebugCameraLayer(camera),
+    createDebugCollisionLayer(level)
+  );
 
-    level.entities.add(goomba);
-    level.entities.add(koopa);
-    level.entities.add(mario);
+  const input = setupKeyboard(mario);
+  input.listenTo(window);
 
-    level.comp.addLayers(
-      createDebugCameraLayer(camera),
-      createDebugCollisionLayer(level)
-    );
+  const timer = new Timer(
+    1/60,
+    (deltaTime: number) => {
+      level.update(deltaTime);
 
-    const input = setupKeyboard(mario);
-    input.listenTo(window);
-
-    const timer = new Timer(
-      1/60,
-      (deltaTime: number) => {
-        level.update(deltaTime);
-
-        if (mario.pos.x > 150) {
-          camera.pos.x = mario.pos.x - 150;
-        }
-
-        level.comp.draw(context, camera);
+      if (mario.pos.x > 150) {
+        camera.pos.x = mario.pos.x - 150;
       }
-    );
 
-    timer.start();
-  });
+      level.comp.draw(context, camera);
+    }
+  );
+
+  timer.start();
 };
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;
