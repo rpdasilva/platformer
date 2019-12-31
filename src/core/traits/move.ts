@@ -3,6 +3,8 @@ import { Entity, Trait } from '../Entity';
 import { Mario } from '../entities/Mario';
 
 export class Move extends Trait {
+  static readonly NAME = 'move';
+
   dir = 0;
   acceleration = 400;
   deceleration = 300;
@@ -12,7 +14,7 @@ export class Move extends Trait {
   heading = 1;
 
   constructor() {
-    super('move');
+    super(Move.NAME);
   }
 
   update(entity: (Entity & Mario), deltaTime: number) {
@@ -25,13 +27,16 @@ export class Move extends Trait {
         if (!entity.jump.falling) {
           this.heading = this.dir;
         }
-      } else {
+      }
+      else {
         this.heading = this.dir;
       }
-    } else if (entity.vel.x !== 0) {
+    }
+    else if (entity.vel.x !== 0) {
       const deceleration = Math.min(absX, this.deceleration * deltaTime);
       entity.vel.x += entity.vel.x > 0 ? -deceleration : deceleration;
-    } else {
+    }
+    else {
       this.distance = 0;
     }
 

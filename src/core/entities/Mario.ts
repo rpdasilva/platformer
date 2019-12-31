@@ -3,16 +3,17 @@ import { Entity } from '../Entity';
 import { loadSpritesheet } from '../loaders';
 import { Spritesheet } from '../Spritesheet';
 import { Jump } from '../traits/Jump';
+import { Killable } from '../traits/Killable';
 import { Move } from '../traits/Move';
+import { Physics } from '../traits/Physics';
+import { Solid } from '../traits/Solid';
+import { Stomper } from '../traits/Stomper';
 import { KeyState } from '../types';
 
 export class Mario extends Entity {
-  move: Move;
-  jump: Jump;
-
   constructor(
     private sprite: Spritesheet,
-    private runAnimRouter: (entity: Entity) => string
+    private runAnimRouter: (entity: Mario) => string
   ) {
     super();
   }
@@ -57,8 +58,16 @@ const createMarioFactory = (sprite: Spritesheet) => {
   return () => {
     const mario = new Mario(sprite, runAnimRouter);
     mario.size.set(14, 16);
+    mario.addTrait(new Physics());
+    mario.addTrait(new Solid());
     mario.addTrait(new Move());
     mario.addTrait(new Jump());
+    mario.addTrait(new Stomper());
+    mario.addTrait(new Killable());
+
+    mario.killable.removeTime = 0.3;
+    mario.vel.y = -3;
+
     return mario;
   };
 };

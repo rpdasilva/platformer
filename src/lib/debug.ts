@@ -45,10 +45,10 @@ export const createDebugCollisionLayer = (level: Level) => {
     return _getByIndex.call(tileResolver, x, y);
   }
 
-  return (
+  return function drawCollisionLayer (
     context: CanvasRenderingContext2D,
     camera: Camera
-  ) => {
+  ) {
     context.strokeStyle = 'blue';
     resolvedTiles.forEach(({ x, y }) => {
       context.beginPath();
@@ -74,14 +74,14 @@ export const createDebugCollisionLayer = (level: Level) => {
     })
 
     resolvedTiles.length = 0;
-  };
+  }
 };
 
 export const createDebugCameraLayer = (cameraToDraw: Camera) =>
-  (
+  function drawCameraLayer (
     context: CanvasRenderingContext2D,
     fromCamera: Camera
-  ) => {
+  ) {
     context.strokeStyle = 'purple';
     context.beginPath();
     context.rect(

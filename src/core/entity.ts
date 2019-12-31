@@ -1,14 +1,46 @@
 import { BoundingBox } from './BoundingBox';
+import { Sides } from './constants';
+import { Level } from './Level';
 import { Vec2 } from './math';
+import { Jump } from './traits/Jump';
+import { Killable } from './traits/Killable';
+import { Move } from './traits/Move';
+import { PendulumMove } from './traits/PendulumMove';
+import { Physics } from './traits/Physics';
+import { PlayerController } from './traits/PlayerController';
+import { Solid } from './traits/Solid';
+import { Stomper } from './traits/Stomper';
+import { TileMatch } from './types';
+
 
 export class Trait {
+  tasks = new Set<() => void>();
+
   constructor(public NAME: string) {}
 
-  update(context: Entity, deltaTime: number) {
-    console.warn('Unhandled update call', deltaTime, context);
+  update(context: Entity, deltaTime: number, level: Level) {}
+  obstruct(context: Entity, side: Sides, match: TileMatch) {}
+  collides(us: Entity, them: Entity) {}
+
+  queue(task: () => void) {
+    this.tasks.add(task);
   }
 
-  obstruct(context: Entity, side: string) {}
+  finalize() {
+    this.tasks.forEach(task => task());
+    this.tasks.clear();
+  }
+}
+
+export interface Entity {
+  jump?: Jump;
+  killable?: Killable;
+  move?: Move;
+  pendulumMove?: PendulumMove;
+  physics?: Physics;
+  playerController?: PlayerController;
+  solid?: Solid;
+  stomper?: Stomper;
 }
 
 export abstract class Entity {
@@ -17,22 +49,34 @@ export abstract class Entity {
   size = new Vec2(0, 0);
   offset = new Vec2(0, 0);
   bounds = new BoundingBox(this.pos, this.size, this.offset);
-  traits: Trait[] = [];
+  traits: Set<Trait> = new Set();
   lifetime = 0;
 
-  abstract draw(context: CanvasRenderingContext2D): void;
+  draw(context: CanvasRenderingContext2D) {}
 
   addTrait(trait: Trait) {
-    this.traits.push(trait);
+    this.traits.add(trait);
     this[trait.NAME] = trait;
   }
 
-  update(deltaTime: number) {
-    this.traits.forEach(trait => trait.update(this, deltaTime));
+  hasTrait(name: string) {
+    return this.traits.has(this[name]);
+  }
+
+  update(deltaTime: number, level: Level) {
+    this.traits.forEach(trait => trait.update(this, deltaTime, level));
     this.lifetime += deltaTime;
   }
 
-  obstruct(side: string) {
-    this.traits.forEach(trait => trait.obstruct(this, side));
+  obstruct(side: Sides, match?: TileMatch) {
+    this.traits.forEach(trait => trait.obstruct(this, side, match));
+  }
+
+  collides(candidate: Entity) {
+    this.traits.forEach(trait => trait.collides(this, candidate));
+  }
+
+  finalize() {
+    this.traits.forEach(trait => trait.finalize());
   }
 }

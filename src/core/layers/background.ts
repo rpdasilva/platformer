@@ -1,12 +1,11 @@
-import { range } from 'ramda';
+import range from 'ramda/es/range';
 
-import { createBuffer, getContext } from '../lib/canvas';
-import { Entity } from './Entity';
-import { Level } from './Level';
-import { Matrix } from './math';
-import { Spritesheet } from './Spritesheet';
-import { TileResolver } from './TileResolver';
-import { Camera } from './Camera';
+import { createBuffer, getContext } from '../../lib/canvas';
+import { Level } from '../Level';
+import { Matrix } from '../math';
+import { Spritesheet } from '../Spritesheet';
+import { TileResolver } from '../TileResolver';
+import { Camera } from '../Camera';
 
 export const createBackgroundLayer = (
   level: Level,
@@ -34,7 +33,8 @@ export const createBackgroundLayer = (
               y,
               level.totalTime
             );
-          } else {
+          }
+          else {
             sprites.drawTile(
               tile.name,
               backgroundContext,
@@ -47,10 +47,10 @@ export const createBackgroundLayer = (
     });
   }
 
-  return (
+  return function drawBackgroundLayer (
     context: CanvasRenderingContext2D,
     camera: Camera
-  ) => {
+  ) {
     const drawWidth = resolver.toIndex(camera.size.x);
     const drawFrom = resolver.toIndex(camera.pos.x);
     const drawTo = drawFrom + drawWidth;
@@ -62,26 +62,4 @@ export const createBackgroundLayer = (
       -camera.pos.y
     );
   }
-};
-
-export const createSpriteLayer = (
-  entities: Set<Entity>,
-  width = 64,
-  height = 64
-) => {
-  const spriteBuffer = createBuffer(width, height);
-  const spriteContext = getContext(spriteBuffer);
-
-  return (context: CanvasRenderingContext2D, camera: Camera) =>
-    entities.forEach(entity => {
-      spriteContext.clearRect(0, 0, width, height);
-
-      entity.draw(spriteContext);
-
-      context.drawImage(
-        spriteBuffer,
-        entity.pos.x - camera.pos.x,
-        entity.pos.y - camera.pos.y
-      );
-    });
 };

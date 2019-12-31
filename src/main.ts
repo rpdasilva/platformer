@@ -5,11 +5,25 @@ import { createLevelLoader } from './core/loaders';
 import { Timer } from './core/Timer';
 import { getContext } from './lib/canvas';
 
+import { Entity } from './core/Entity';
+import { PlayerController } from './core/traits/PlayerController';
+
 import {
   createDebugCameraLayer,
   createDebugCollisionLayer
 } from './lib/debug';
 
+const createPlayerEnv = (playerEntity: Entity) => {
+  class PlayerEnv extends Entity {}
+
+  const playerEnv = new PlayerEnv();
+  const playerController = new PlayerController();
+  playerController.setPlayer(playerEntity);
+  playerController.checkpoint.set(64, 64);
+  playerEnv.addTrait(playerController);
+
+  return playerEnv;
+};
 
 const main = async (canvas: HTMLCanvasElement) => {
   const context = getContext(canvas);
@@ -21,8 +35,8 @@ const main = async (canvas: HTMLCanvasElement) => {
   const camera = new Camera();
 
   const mario = entityFactory.mario();
-  mario.pos.set(64, 64);
-  level.entities.add(mario);
+  const playerEnv = createPlayerEnv(mario);
+  level.entities.add(playerEnv);
 
   level.comp.addLayers(
     createDebugCameraLayer(camera),
@@ -37,9 +51,7 @@ const main = async (canvas: HTMLCanvasElement) => {
     (deltaTime: number) => {
       level.update(deltaTime);
 
-      if (mario.pos.x > 150) {
-        camera.pos.x = mario.pos.x - 150;
-      }
+      camera.pos.x = Math.max(0, mario.pos.x - 150);
 
       level.comp.draw(context, camera);
     }

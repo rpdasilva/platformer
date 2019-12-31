@@ -1,6 +1,7 @@
 import { Compositor } from './Compositor';
 import { Matrix } from './math';
 import { Entity } from './Entity';
+import { EntityCollider } from './EntityCollider';
 import { TileCollider } from './TileCollider';
 
 export class Level {
@@ -8,6 +9,7 @@ export class Level {
   totalTime = 0;
   comp = new Compositor();
   entities = new Set<Entity>();
+  entityCollider = new EntityCollider(this.entities);
   tileCollider: TileCollider;
 
   setCollisionGrid(matrix: Matrix) {
@@ -15,17 +17,9 @@ export class Level {
   }
 
   update(deltaTime: number) {
-    this.entities.forEach(entity => {
-      entity.update(deltaTime);
-
-      entity.pos.x += entity.vel.x * deltaTime;
-      this.tileCollider.checkX(entity);
-
-      entity.pos.y += entity.vel.y * deltaTime;
-      this.tileCollider.checkY(entity);
-
-      entity.vel.y += this.gravity * deltaTime;
-    });
+    this.entities.forEach(entity => entity.update(deltaTime, this));
+    this.entities.forEach(entity => this.entityCollider.check(entity));
+    this.entities.forEach(entity => entity.finalize());
 
     this.totalTime += deltaTime;
   }

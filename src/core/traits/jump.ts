@@ -2,6 +2,8 @@ import { Sides } from '../constants';
 import { Entity, Trait } from '../Entity';
 
 export class Jump extends Trait {
+  static readonly NAME = 'jump';
+
   enabled = 0;
   duration = 0.25;
   velocity = 200;
@@ -11,7 +13,7 @@ export class Jump extends Trait {
   gracePeriod = 0.1;
 
   constructor() {
-    super('jump');
+    super(Jump.NAME);
   }
 
   get falling() {
@@ -45,7 +47,7 @@ export class Jump extends Trait {
     this.enabled--;
   }
 
-  obstruct(_: Entity, side: string) {
+  obstruct(_: Entity, side: Sides) {
     if (side === Sides.BOTTOM) {
       this.enabled = 1;
     }

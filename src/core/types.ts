@@ -1,3 +1,5 @@
+import { Entity } from './Entity';
+
 export type KeyState = 1 | 0;
 
 type Range2 = [number, number];
@@ -19,3 +21,12 @@ export interface Pattern {
 export interface Patterns {
   [name: string]: Pattern;
 }
+
+export type AnimationRouter = (entity: Entity) => string;
+export type TileMatch = {
+  tile: any;
+  x1: number;
+  x2: number;
+  y1: number;
+  y2: number;
+};

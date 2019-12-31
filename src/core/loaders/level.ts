@@ -1,9 +1,11 @@
-import { flatten, range } from 'ramda';
+import flatten from 'ramda/es/flatten';
+import range from 'ramda/es/range';
 
 import { levelUrls } from '../constants';
+import { createBackgroundLayer } from '../layers/background';
+import { createSpriteLayer } from '../layers/sprites';
 import { Matrix } from '../math';
 import { Patterns, Range, Tile } from '../types';
-import { createBackgroundLayer, createSpriteLayer } from '../layers';
 import { Level } from '../Level';
 import { loadSpritesheet } from './spritesheet';
 
@@ -50,7 +52,8 @@ const expandTiles = (
               adjustedX,
               adjustedY
             );
-          } else {
+          }
+          else {
             return {
               tile,
               x: adjustedX,

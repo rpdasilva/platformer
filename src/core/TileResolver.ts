@@ -1,5 +1,10 @@
+import equals from 'ramda/es/equals';
+import filter from 'ramda/es/filter';
+import flatten from 'ramda/es/flatten';
+import pipe from 'ramda/es/pipe';
+
 import { Matrix } from './math';
-import { equals, filter, flatten, pipe } from 'ramda';
+import { TileMatch } from './types';
 
 export class TileResolver {
   constructor(public matrix: Matrix, public tileSize = 16) {}
@@ -21,7 +26,7 @@ export class TileResolver {
     return range;
   }
 
-  getByIndex(x: number, y: number) {
+  getByIndex(x: number, y: number): TileMatch {
     const tile = this.matrix.get(x, y);
 
     if (tile) {
@@ -48,19 +53,6 @@ export class TileResolver {
   }
 
   searchByRange(x1: number, x2: number, y1: number, y2: number) {
-    // const matches = [];
-
-    // this.toIndexRange(x1, x2)
-    //   .forEach(indexX => this.toIndexRange(y1, y2)
-    //     .forEach(indexY => {
-    //       const match = this.getByIndex(indexX, indexY);
-    //       if (match) {
-    //         matches.push(match);
-    //       }
-    //     }));
-
-    // return matches;
-
     const indices = this.toIndexRange(x1, x2)
       .map(indexX => this.toIndexRange(y1, y2)
         .map(indexY => this.getByIndex(indexX, indexY)));
