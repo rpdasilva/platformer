@@ -1,5 +1,5 @@
 import { Entity, Trait } from '../Entity';
-import { loadSpritesheet } from '../loaders';
+import { loadSpritesheet } from '../loaders/spritesheet';
 import { Spritesheet } from '../Spritesheet';
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';

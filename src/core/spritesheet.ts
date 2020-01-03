@@ -6,8 +6,8 @@ export class Spritesheet {
 
   constructor(
     public image: HTMLImageElement,
-    public width: number,
-    public height: number
+    public width = 16,
+    public height = 16
   ) {}
 
   define(name: string, x: number, y: number, width: number, height: number) {

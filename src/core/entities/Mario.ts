@@ -1,6 +1,6 @@
 import { Drag } from '../constants';
 import { Entity } from '../Entity';
-import { loadSpritesheet } from '../loaders';
+import { loadSpritesheet } from '../loaders/spritesheet';
 import { Spritesheet } from '../Spritesheet';
 import { Jump } from '../traits/Jump';
 import { Killable } from '../traits/Killable';

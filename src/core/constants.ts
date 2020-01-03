@@ -41,5 +41,7 @@ export const spriteSheetUrls: AssetMap<Promise<any>>  = {
 
 export const spriteUrls: AssetMap<Promise<string>> = {
   characters: Promise.resolve(require('../assets/images/characters.gif')),
+  font: Promise.resolve(require('../assets/images/font.png')),
+  items: Promise.resolve(require('../assets/images/items.png')),
   tiles: Promise.resolve(require('../assets/images/tiles.png'))
 };

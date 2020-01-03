@@ -1,17 +1,17 @@
 import { Camera } from './core/Camera';
 import { loadEntities } from './core/entities';
 import { setupKeyboard } from './core/input';
-import { createLevelLoader } from './core/loaders';
+import { createLevelLoader } from './core/loaders/level';
+import { loadFont } from './core/loaders/font';
 import { Timer } from './core/Timer';
 import { getContext } from './lib/canvas';
 
 import { Entity } from './core/Entity';
 import { PlayerController } from './core/traits/PlayerController';
 
-import {
-  createDebugCameraLayer,
-  createDebugCollisionLayer
-} from './lib/debug';
+import { createDebugCameraLayer } from './lib/debug/layers/camera';
+import { createDebugCollisionLayer } from './lib/debug/layers/collision';
+import { createDashboardLayer } from './core/layers/dashboard';
 
 const createPlayerEnv = (playerEntity: Entity) => {
   class PlayerEnv extends Entity {}
@@ -29,6 +29,7 @@ const main = async (canvas: HTMLCanvasElement) => {
   const context = getContext(canvas);
 
   const entityFactory = await loadEntities();
+  const font = await loadFont();
   const loadLevel = createLevelLoader(entityFactory);
   const level = await loadLevel('1-1');
 
@@ -40,7 +41,8 @@ const main = async (canvas: HTMLCanvasElement) => {
 
   level.comp.addLayers(
     createDebugCameraLayer(camera),
-    createDebugCollisionLayer(level)
+    createDebugCollisionLayer(level),
+    createDashboardLayer(font, playerEnv)
   );
 
   const input = setupKeyboard(mario);
