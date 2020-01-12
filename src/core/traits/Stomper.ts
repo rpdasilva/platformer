@@ -1,3 +1,4 @@
+import { EventTypes } from '../constants';
 import { Entity, Trait } from '../Entity';
 
 export class Stomper extends Trait {

@@ -22,6 +22,10 @@ export enum Drag {
   LOW = 1/5500
 }
 
+export enum EventTypes {
+  ON_SCORE
+}
+
 export type AssetMap<T> = { [k: string]: T };
 
 export const levels = ['1-1'];

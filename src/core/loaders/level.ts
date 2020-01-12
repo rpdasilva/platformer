@@ -7,6 +7,7 @@ import { createSpriteLayer } from '../layers/sprites';
 import { Matrix } from '../math';
 import { Patterns, Range, Tile } from '../types';
 import { Level } from '../Level';
+import { loadFont } from './font';
 import { loadSpritesheet } from './spritesheet';
 
 
@@ -86,7 +87,7 @@ const createBackgroundGrid = (tiles: Tile[], patterns: Patterns) => {
   return grid;
 }
 
-const setupCollistion = (levelSpec, level: Level) => {
+const setupCollision = (levelSpec, level: Level) => {
   const mergedTiles = flatten(
     levelSpec.layers.map(layer => layer.tiles)
   );
@@ -138,12 +139,13 @@ const setupEntities = (
 export const createLevelLoader = entityFactory => (name: string) =>
   levelUrls[name].then(levelSpec => Promise.all([
     levelSpec,
-    loadSpritesheet(levelSpec.spritesheet)
+    loadSpritesheet(levelSpec.spritesheet),
+    loadFont()
   ]))
-  .then(([levelSpec, backgroundSprites]) => {
-    const level = new Level();
+  .then(([levelSpec, backgroundSprites, font]) => {
+    const level = new Level(font);
 
-    setupCollistion(levelSpec, level);
+    setupCollision(levelSpec, level);
     setupBackground(levelSpec, backgroundSprites, level);
     setupEntities(levelSpec, level, entityFactory);
 

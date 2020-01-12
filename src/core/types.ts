@@ -1,4 +1,5 @@
 import { Entity } from './Entity';
+import { EventTypes } from './constants';
 
 export type KeyState = 1 | 0;
 
@@ -30,3 +31,10 @@ export type TileMatch = {
   y1: number;
   y2: number;
 };
+
+export interface EventPayloads {
+  [EventTypes.ON_SCORE]: {
+    score: number;
+    stackable?: boolean;
+  };
+}

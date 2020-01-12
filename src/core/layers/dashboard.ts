@@ -8,8 +8,10 @@ export const createDashboardLayer = (font: Font, playerEnv: Entity) => {
   const coins = (value = 0) => `@x${value.toString().padStart(2, '0')}`;
 
   return function drawDashboardLayer (context: CanvasRenderingContext2D) {
+    const { playerController } = playerEnv;
+
     font.print('MARIO', context, 16, line(1));
-    font.print(score(24500), context, 16, line(2));
+    font.print(score(playerController.score), context, 16, line(2));
 
     font.print(coins(13), context, 96, line(2));
 
@@ -17,6 +19,6 @@ export const createDashboardLayer = (font: Font, playerEnv: Entity) => {
     font.print('1-1', context, 160, line(2));
 
     font.print('TIME', context, 208, line(1));
-    font.print(time(playerEnv.playerController.time), context, 216, line(2));
+    font.print(time(playerController.time), context, 216, line(2));
   }
 };

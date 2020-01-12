@@ -1,5 +1,6 @@
 import { BoundingBox } from './BoundingBox';
 import { Sides } from './constants';
+import { globalEventManager } from './EventManager';
 import { Level } from './Level';
 import { Vec2 } from './math';
 import { Jump } from './traits/Jump';
@@ -8,6 +9,7 @@ import { Move } from './traits/Move';
 import { PendulumMove } from './traits/PendulumMove';
 import { Physics } from './traits/Physics';
 import { PlayerController } from './traits/PlayerController';
+import { Score } from './traits/Score';
 import { Solid } from './traits/Solid';
 import { Stomper } from './traits/Stomper';
 import { TileMatch } from './types';
@@ -15,6 +17,7 @@ import { TileMatch } from './types';
 
 export class Trait {
   tasks = new Set<() => void>();
+  events = globalEventManager;
 
   constructor(public NAME: string) {}
 
@@ -39,6 +42,7 @@ export interface Entity {
   pendulumMove?: PendulumMove;
   physics?: Physics;
   playerController?: PlayerController;
+  score?: Score;
   solid?: Solid;
   stomper?: Stomper;
 }
@@ -50,6 +54,7 @@ export abstract class Entity {
   offset = new Vec2(0, 0);
   bounds = new BoundingBox(this.pos, this.size, this.offset);
   traits: Set<Trait> = new Set();
+  events = globalEventManager;
   lifetime = 0;
 
   draw(context: CanvasRenderingContext2D) {}

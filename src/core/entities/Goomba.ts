@@ -4,6 +4,7 @@ import { Spritesheet } from '../Spritesheet';
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
+import { Score } from '../traits/Score';
 import { Solid } from '../traits/Solid';
 
 class Behaviour extends Trait {
@@ -19,6 +20,7 @@ class Behaviour extends Trait {
     if (them.stomper) {
       if (them.vel.y > us.vel.y) {
         this.stop(us);
+        us.score.display(us, true);
         us.killable.kill();
       }
       else if (them.killable) {
@@ -74,6 +76,7 @@ const createGoombaFactory = (sprite: Spritesheet) => {
     goomba.addTrait(new PendulumMove());
     goomba.addTrait(new Behaviour());
     goomba.addTrait(new Killable());
+    goomba.addTrait(new Score());
 
     return goomba;
   };

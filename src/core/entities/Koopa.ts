@@ -4,6 +4,7 @@ import { Spritesheet } from '../Spritesheet';
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
+import { Score } from '../traits/Score';
 import { Solid } from '../traits/Solid';
 
 const STATE_WALKING = Symbol('walking');
@@ -42,6 +43,7 @@ class Behaviour extends Trait {
       }
     }
     else if (this.state === STATE_HIDING) {
+      us.score.display(us, true);
       this.panic(us, them);
     }
     else if (this.state === STATE_PANIC) {
@@ -60,9 +62,11 @@ class Behaviour extends Trait {
 
   handleStomp(us: Koopa, them: Entity) {
     if (this.state === STATE_WALKING || this.state === STATE_PANIC) {
+      us.score.display(us, true);
       this.hide(us);
     }
     else if (this.state === STATE_HIDING) {
+      us.score.display(us, true);
       us.killable.kill();
       us.vel.set(100, -200);
       us.solid.obstructs = false;
@@ -80,12 +84,14 @@ class Behaviour extends Trait {
     us.pendulumMove.enabled = false;
     this.state = STATE_HIDING;
     this.hideTime = 0;
+    this.queue(() => us.score.value = 400);
   }
 
   unhide(us: Koopa) {
     us.pendulumMove.enabled = true;
-    us.pendulumMove.reset();
+    us.score.reset();
     this.state = STATE_WALKING;
+    this.queue(() => us.score.reset());
   }
 
   update(us: Koopa, deltaTime: number) {
@@ -103,7 +109,7 @@ export class Koopa extends Entity {
   behaviour: Behaviour;
 
   constructor(
-    private sprite: Spritesheet,
+    public sprite: Spritesheet,
     private animationRouter: (entity: Entity) => string
   ) {
     super();
@@ -156,8 +162,9 @@ const createKoopaFactory = (sprite: Spritesheet) => {
     koopa.addTrait(new Physics());
     koopa.addTrait(new Solid());
     koopa.addTrait(new PendulumMove());
-    koopa.addTrait(new Killable());
     koopa.addTrait(new Behaviour());
+    koopa.addTrait(new Killable());
+    koopa.addTrait(new Score());
 
     return koopa;
   };

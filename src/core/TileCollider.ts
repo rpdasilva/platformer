@@ -39,6 +39,7 @@ export class TileCollider {
         return;
       }
 
+      // TODO: Logic for smooth corners here: Check y positioning against tile
       if (entity.vel.x > 0) {
         if (entity.bounds.right > match.x1) {
           entity.obstruct(Sides.RIGHT, match);

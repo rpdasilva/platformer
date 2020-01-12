@@ -1,6 +1,8 @@
+import { EventTypes } from '../constants';
 import { Entity, Trait } from '../Entity';
 import { Level } from '../Level';
 import { Vec2 } from '../math';
+import { scoreProvider } from '../ScoreProvider';
 
 const DEFAULT_TIME = 300;
 
@@ -10,9 +12,14 @@ export class PlayerController extends Trait {
   player: Entity;
   checkpoint = new Vec2(0, 0);
   time = DEFAULT_TIME;
+  score = 0;
 
   constructor() {
     super(PlayerController.NAME);
+
+    this.events.subscribe(EventTypes.ON_SCORE, this, ({ score = 0 }) =>
+      this.score += score
+    );
   }
 
   setPlayer(entity: Entity) {
@@ -31,5 +38,7 @@ export class PlayerController extends Trait {
     } else {
       this.time -= deltaTime * 2;
     }
+
+    scoreProvider.update(deltaTime);
   }
 }

@@ -7,8 +7,13 @@ export class Font {
     text: string,
     context: CanvasRenderingContext2D,
     x: number,
-    y: number
+    y: number,
+    scale?: number
   ) {
+    if (scale) {
+      context.scale(scale, scale);
+    }
+
     text.split('').forEach((char, index) =>
       this.sprites.draw(
         char,
@@ -17,5 +22,9 @@ export class Font {
         y
       )
     );
+
+    if (scale) {
+      context.setTransform(1, 0, 0, 1, 0, 0);
+    }
   }
 }

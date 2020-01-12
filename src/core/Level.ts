@@ -2,6 +2,7 @@ import { Compositor } from './Compositor';
 import { Matrix } from './math';
 import { Entity } from './Entity';
 import { EntityCollider } from './EntityCollider';
+import { Font } from './Font';
 import { TileCollider } from './TileCollider';
 
 export class Level {
@@ -11,6 +12,8 @@ export class Level {
   entities = new Set<Entity>();
   entityCollider = new EntityCollider(this.entities);
   tileCollider: TileCollider;
+
+  constructor(public font: Font) {}
 
   setCollisionGrid(matrix: Matrix) {
     this.tileCollider = new TileCollider(matrix);
