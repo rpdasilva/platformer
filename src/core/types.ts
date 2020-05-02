@@ -1,5 +1,12 @@
 import { Entity } from './Entity';
 
+export interface GameContext {
+  audioContext: AudioContext;
+  deltaTime: number;
+}
+
+export type LoadEntity = (audioContext: AudioContext) => Promise<() => Entity>
+
 export type KeyState = 1 | 0;
 
 type Range2 = [number, number];

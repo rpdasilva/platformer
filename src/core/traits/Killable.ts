@@ -1,5 +1,6 @@
 import { Entity, Trait } from '../Entity';
 import { Level } from '../Level';
+import { GameContext } from '../../core/types';
 
 export class Killable extends Trait {
   static readonly NAME = 'killable';
@@ -21,7 +22,7 @@ export class Killable extends Trait {
     this.deadTime = 0;
   }
 
-  update(entity: Entity, deltaTime: number, level: Level) {
+  update(entity: Entity, { deltaTime }: GameContext, level: Level) {
     if (this.dead) {
       this.deadTime += deltaTime;
 

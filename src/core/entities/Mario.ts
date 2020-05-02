@@ -1,5 +1,6 @@
 import { Drag } from '../constants';
 import { Entity } from '../Entity';
+import { loadAudioBoard } from '../loaders/audio';
 import { loadSpritesheet } from '../loaders/spritesheet';
 import { Spritesheet } from '../Spritesheet';
 import { Jump } from '../traits/Jump';
@@ -8,12 +9,14 @@ import { Move } from '../traits/Move';
 import { Physics } from '../traits/Physics';
 import { Solid } from '../traits/Solid';
 import { Stomper } from '../traits/Stomper';
-import { KeyState } from '../types';
+import { KeyState, LoadEntity } from '../types';
+import { AudioBoard } from '../AudioBoard';
 
 export class Mario extends Entity {
   constructor(
     private sprite: Spritesheet,
-    private runAnimRouter: (entity: Mario) => string
+    private runAnimRouter: (entity: Mario) => string,
+    public audioBoard: AudioBoard
   ) {
     super();
   }
@@ -49,14 +52,19 @@ const createRunAnimation = (sprite: Spritesheet) => {
   }
 };
 
-export const loadMario = () =>
-  loadSpritesheet('mario').then(createMarioFactory);
+export const loadMario: LoadEntity = (audioContext: AudioContext) => {
+  return Promise.all([
+      loadSpritesheet('mario'),
+      loadAudioBoard('mario', audioContext)
+    ])
+    .then(([spriteSheet, audioBoard]) => createMarioFactory(spriteSheet, audioBoard));
+}
 
-const createMarioFactory = (sprite: Spritesheet) => {
+const createMarioFactory = (sprite: Spritesheet, audioBoard: AudioBoard) => {
   const runAnimRouter = createRunAnimation(sprite);
 
   return () => {
-    const mario = new Mario(sprite, runAnimRouter);
+    const mario = new Mario(sprite, runAnimRouter, audioBoard);
     mario.size.set(14, 16);
     mario.addTrait(new Physics());
     mario.addTrait(new Solid());

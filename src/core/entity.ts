@@ -10,20 +10,27 @@ import { Physics } from './traits/Physics';
 import { PlayerController } from './traits/PlayerController';
 import { Solid } from './traits/Solid';
 import { Stomper } from './traits/Stomper';
-import { TileMatch } from './types';
+import { TileMatch, GameContext } from './types';
+import { AudioBoard } from './AudioBoard';
 
 
 export class Trait {
   tasks = new Set<() => void>();
+  sounds = new Set<string>();
 
   constructor(public NAME: string) {}
 
-  update(context: Entity, deltaTime: number, level: Level) {}
+  update(context: Entity, gameContext: GameContext, level: Level) {}
   obstruct(context: Entity, side: Sides, match: TileMatch) {}
   collides(us: Entity, them: Entity) {}
 
   queue(task: () => void) {
     this.tasks.add(task);
+  }
+
+  playSounds(audioBoard: AudioBoard, audioContext: AudioContext) {
+    this.sounds.forEach(sound => audioBoard.play(sound, audioContext));
+    this.sounds.clear();
   }
 
   finalize() {
@@ -51,6 +58,7 @@ export abstract class Entity {
   bounds = new BoundingBox(this.pos, this.size, this.offset);
   traits: Set<Trait> = new Set();
   lifetime = 0;
+  audioBoard = new AudioBoard();
 
   draw(context: CanvasRenderingContext2D) {}
 
@@ -63,9 +71,12 @@ export abstract class Entity {
     return this.traits.has(this[name]);
   }
 
-  update(deltaTime: number, level: Level) {
-    this.traits.forEach(trait => trait.update(this, deltaTime, level));
-    this.lifetime += deltaTime;
+  update(gameContext: GameContext, level: Level) {
+    this.traits.forEach(trait => {
+      trait.update(this, gameContext, level);
+      trait.playSounds(this.audioBoard, gameContext.audioContext);
+    });
+    this.lifetime += gameContext.deltaTime;
   }
 
   obstruct(side: Sides, match?: TileMatch) {

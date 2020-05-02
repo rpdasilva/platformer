@@ -5,6 +5,7 @@ import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
 import { Solid } from '../traits/Solid';
+import { GameContext, LoadEntity } from '../types';
 
 const STATE_WALKING = Symbol('walking');
 const STATE_HIDING = Symbol('hiding');
@@ -88,7 +89,7 @@ class Behaviour extends Trait {
     this.state = STATE_WALKING;
   }
 
-  update(us: Koopa, deltaTime: number) {
+  update(us: Koopa, { deltaTime }: GameContext) {
     if (this.state === STATE_HIDING) {
       this.hideTime += deltaTime;
 
@@ -142,7 +143,7 @@ const createAnimations = (sprite: Spritesheet) => {
   }
 };
 
-export const loadKoopa = () =>
+export const loadKoopa: LoadEntity = () =>
   loadSpritesheet('koopa').then(createKoopaFactory);
 
 const createKoopaFactory = (sprite: Spritesheet) => {

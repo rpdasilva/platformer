@@ -5,6 +5,7 @@ import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
 import { Solid } from '../traits/Solid';
+import { LoadEntity } from '../types';
 
 class Behaviour extends Trait {
   constructor() {
@@ -59,7 +60,7 @@ const createAnimations = (sprite: Spritesheet) => {
 };
 
 
-export const loadGoomba = () =>
+export const loadGoomba: LoadEntity = () =>
   loadSpritesheet('goomba').then(createGoombaFactory);
 
 const createGoombaFactory = (sprite: Spritesheet) => {

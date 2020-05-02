@@ -8,6 +8,7 @@ import { getContext } from './lib/canvas';
 
 import { Entity } from './core/Entity';
 import { PlayerController } from './core/traits/PlayerController';
+import { GameContext } from './core/types';
 
 import { createDebugCameraLayer } from './lib/debug/layers/camera';
 import { createDebugCollisionLayer } from './lib/debug/layers/collision';
@@ -25,10 +26,13 @@ const createPlayerEnv = (playerEntity: Entity) => {
   return playerEnv;
 };
 
+
+
 const main = async (canvas: HTMLCanvasElement) => {
   const context = getContext(canvas);
+  const audioContext = new AudioContext();
 
-  const entityFactory = await loadEntities();
+  const entityFactory = await loadEntities(audioContext);
   const font = await loadFont();
   const loadLevel = createLevelLoader(entityFactory);
   const level = await loadLevel('1-1');
@@ -48,10 +52,16 @@ const main = async (canvas: HTMLCanvasElement) => {
   const input = setupKeyboard(mario);
   input.listenTo(window);
 
+  const gameContext: GameContext = {
+    audioContext,
+    deltaTime: null
+  }
+
   const timer = new Timer(
     1/60,
     (deltaTime: number) => {
-      level.update(deltaTime);
+      gameContext.deltaTime = deltaTime;
+      level.update(gameContext);
 
       camera.pos.x = Math.max(0, mario.pos.x - 150);
 
@@ -63,4 +73,10 @@ const main = async (canvas: HTMLCanvasElement) => {
 };
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;
-main(canvas);
+
+const start = () => {
+  window.removeEventListener('click', start);
+  main(canvas);
+};
+
+window.addEventListener('click', start);

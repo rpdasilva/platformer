@@ -1,0 +1,16 @@
+{
+  "fx": {
+    "coin": {
+      "name": "coin"
+    },
+    "jump": {
+      "name": "jump"
+    },
+    "stomp": {
+      "name": "stomp"
+    },
+    "thwomp": {
+      "name": "thwomp"
+    }
+  }
+}

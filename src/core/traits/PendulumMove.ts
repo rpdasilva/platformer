@@ -1,5 +1,6 @@
 import { Sides } from '../constants';
 import { Entity, Trait } from '../Entity';
+import { GameContext } from '../../core/types';
 
 const INITIAL_SPEED = -30;
 
@@ -13,7 +14,7 @@ export class PendulumMove extends Trait {
     super(PendulumMove.NAME);
   }
 
-  update(entity: Entity, deltaTime: number) {
+  update(entity: Entity, { deltaTime }: GameContext) {
     if (this.enabled) {
       entity.vel.x = this.speed;
     }

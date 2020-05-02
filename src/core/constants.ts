@@ -45,3 +45,20 @@ export const spriteUrls: AssetMap<Promise<string>> = {
   items: Promise.resolve(require('../assets/images/items.png')),
   tiles: Promise.resolve(require('../assets/images/tiles.png'))
 };
+
+export const soundEffectUrls: AssetMap<Promise<string>> = {
+  coin: Promise.resolve(require('../assets/audio/coin.ogg')),
+  jump: Promise.resolve(require('../assets/audio/jump.ogg')),
+  stomp: Promise.resolve(require('../assets/audio/stomp.ogg')),
+  thwomp: Promise.resolve(require('../assets/audio/thwomp.ogg'))
+};
+
+export const musicUrls: AssetMap<Promise<string>> = {
+  hurry: Promise.resolve(require('../assets/audio/music/hurry.ogg')),
+  overworld: Promise.resolve(require('../assets/audio/music/overworld.ogg')),
+  underworld: Promise.resolve(require('../assets/audio/music/underworld.ogg'))
+};
+
+export const audioSheetUrls: AssetMap<Promise<any>>  = {
+  mario: Promise.resolve(require('../assets/sounds/mario.json'))
+};

@@ -1,6 +1,7 @@
 import { Entity, Trait } from '../Entity';
 import { Level } from '../Level';
 import { Vec2 } from '../math';
+import { GameContext } from '../../core/types';
 
 const DEFAULT_TIME = 300;
 
@@ -19,7 +20,7 @@ export class PlayerController extends Trait {
     this.player = entity;
   }
 
-  update(_: Entity, deltaTime: number, level: Level) {
+  update(_: Entity, { deltaTime }: GameContext, level: Level) {
     if (!level.entities.has(this.player)) {
       this.player.killable.revive();
       this.player.pos.set(

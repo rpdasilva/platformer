@@ -1,6 +1,7 @@
 import { Drag } from '../constants';
 import { Entity, Trait } from '../Entity';
 import { Mario } from '../entities/Mario';
+import { GameContext } from '../../core/types';
 
 export class Move extends Trait {
   static readonly NAME = 'move';
@@ -17,7 +18,7 @@ export class Move extends Trait {
     super(Move.NAME);
   }
 
-  update(entity: (Entity & Mario), deltaTime: number) {
+  update(entity: (Entity & Mario), { deltaTime }: GameContext) {
     const absX = Math.abs(entity.vel.x);
 
     if (this.dir !== 0) {
