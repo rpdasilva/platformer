@@ -1,0 +1,9 @@
+{
+  "imageName": "characters",
+  "frames": [
+      {
+          "name": "bullet",
+          "rect": [267, 334, 16, 14]
+      }
+  ]
+}

@@ -1,6 +1,6 @@
 import { Sides } from '../constants';
 import { Entity, Trait } from '../Entity';
-import { GameContext } from '../../core/types';
+import { GameContext } from '../types';
 
 export class Jump extends Trait {
   static readonly NAME = 'jump';
@@ -33,7 +33,7 @@ export class Jump extends Trait {
   update(entity: Entity, { deltaTime }: GameContext) {
     if (this.requestTime > 0) {
       if (this.enabled > 0) {
-        this.sounds.add('jump');
+        entity.sounds.add('jump');
         this.engagedTime = this.duration;
         this.requestTime = 0;
       }

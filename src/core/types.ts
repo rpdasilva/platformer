@@ -5,7 +5,14 @@ export interface GameContext {
   deltaTime: number;
 }
 
-export type LoadEntity = (audioContext: AudioContext) => Promise<() => Entity>
+export type EntityFactory = () => Entity;
+export type EntityFactories = { [name: string]: () => Entity; };
+export type LoadEntity = (audioContext: AudioContext, entityFactories?: EntityFactories) => Promise<EntityFactory>;
+export type Handler<T> = (...args: T[]) => void;
+export type Listener<T> = {
+  eventName: string;
+  handler: Handler<T>;
+}
 
 export type KeyState = 1 | 0;
 

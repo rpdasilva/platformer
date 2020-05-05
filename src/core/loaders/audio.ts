@@ -5,13 +5,13 @@ export const loadAudioBoard = (name: string, audioContext: AudioContext) => {
   const loadSoundEffect = createSoundEffectLoader(audioContext);
 
   return audioSheetUrls[name]
-    .then(({ fx }) => Object.keys(fx))
+    .then(({ fx }) => Object.entries(fx))
     .then(fx => Promise.all(
-      fx.map(name =>
-        loadSoundEffect(name).then(buffer => ({ name, buffer })))
+      fx.map(([name, effect]: [string, { name: string; }]) =>
+        loadSoundEffect(effect.name).then(buffer => ({ name, buffer })))
     ))
     .then(soundEffects => {
-      const audioBoard = new AudioBoard(audioContext);
+      const audioBoard = new AudioBoard();
       soundEffects.forEach(({ name, buffer}) => {
         audioBoard.addAudio(name, buffer);
       });

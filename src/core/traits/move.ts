@@ -1,7 +1,7 @@
 import { Drag } from '../constants';
 import { Entity, Trait } from '../Entity';
 import { Mario } from '../entities/Mario';
-import { GameContext } from '../../core/types';
+import { GameContext } from '../types';
 
 export class Move extends Trait {
   static readonly NAME = 'move';

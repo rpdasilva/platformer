@@ -35,6 +35,7 @@ export const spriteSheetUrls: AssetMap<Promise<any>>  = {
   goomba: Promise.resolve(require('../assets/sprites/goomba.json')),
   koopa: Promise.resolve(require('../assets/sprites/koopa.json')),
   mario: Promise.resolve(require('../assets/sprites/mario.json')),
+  bulletBill: Promise.resolve(require('../assets/sprites/bullet-bill.json')),
   overworld: Promise.resolve(require('../assets/sprites/overworld.json')),
   underworld: Promise.resolve(require('../assets/sprites/underworld.json'))
 };
@@ -60,5 +61,6 @@ export const musicUrls: AssetMap<Promise<string>> = {
 };
 
 export const audioSheetUrls: AssetMap<Promise<any>>  = {
-  mario: Promise.resolve(require('../assets/sounds/mario.json'))
+  mario: Promise.resolve(require('../assets/sounds/mario.json')),
+  cannon: Promise.resolve(require('../assets/sounds/cannon.json'))
 };

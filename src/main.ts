@@ -3,30 +3,14 @@ import { loadEntities } from './core/entities';
 import { setupKeyboard } from './core/input';
 import { createLevelLoader } from './core/loaders/level';
 import { loadFont } from './core/loaders/font';
+import { createPlayer, createPlayerEnv } from './core/player';
 import { Timer } from './core/Timer';
-import { getContext } from './lib/canvas';
-
-import { Entity } from './core/Entity';
-import { PlayerController } from './core/traits/PlayerController';
 import { GameContext } from './core/types';
+import { getContext } from './lib/canvas';
 
 import { createDebugCameraLayer } from './lib/debug/layers/camera';
 import { createDebugCollisionLayer } from './lib/debug/layers/collision';
 import { createDashboardLayer } from './core/layers/dashboard';
-
-const createPlayerEnv = (playerEntity: Entity) => {
-  class PlayerEnv extends Entity {}
-
-  const playerEnv = new PlayerEnv();
-  const playerController = new PlayerController();
-  playerController.setPlayer(playerEntity);
-  playerController.checkpoint.set(64, 64);
-  playerEnv.addTrait(playerController);
-
-  return playerEnv;
-};
-
-
 
 const main = async (canvas: HTMLCanvasElement) => {
   const context = getContext(canvas);
@@ -39,7 +23,7 @@ const main = async (canvas: HTMLCanvasElement) => {
 
   const camera = new Camera();
 
-  const mario = entityFactory.mario();
+  const mario = createPlayer(entityFactory.mario());
   const playerEnv = createPlayerEnv(mario);
   level.entities.add(playerEnv);
 

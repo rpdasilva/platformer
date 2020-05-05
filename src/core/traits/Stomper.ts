@@ -20,8 +20,9 @@ export class Stomper extends Trait {
     }
 
     if (us.vel.y > them.vel.y) {
-      this.bounce(us, them);
-      this.sounds.add('stomp');
+      this.queue(() => this.bounce(us, them));
+      us.sounds.add('stomp');
+      this.events.emit('stomp', us, them);
     }
   }
 }

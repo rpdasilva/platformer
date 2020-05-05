@@ -5,6 +5,7 @@
     "lib": ["dom", "es6", "es2017.object"],
     "noImplicitAny": true,
     "noUnusedLocals": true,
+    "downlevelIteration": true,
     "baseUrl": ".",
     "paths": {
       "~*": ["./src/*"]
