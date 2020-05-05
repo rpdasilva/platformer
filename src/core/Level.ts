@@ -1,5 +1,4 @@
 import { Compositor } from './Compositor';
-import { Matrix } from './math';
 import { Entity } from './Entity';
 import { EntityCollider } from './EntityCollider';
 import { TileCollider } from './TileCollider';
@@ -11,11 +10,7 @@ export class Level {
   comp = new Compositor();
   entities = new Set<Entity>();
   entityCollider = new EntityCollider(this.entities);
-  tileCollider: TileCollider;
-
-  setCollisionGrid(matrix: Matrix) {
-    this.tileCollider = new TileCollider(matrix);
-  }
+  tileCollider = new TileCollider();
 
   update(gameContext: GameContext) {
     this.entities.forEach(entity => entity.update(gameContext, this));

@@ -8,7 +8,9 @@ import { EntityFactory, EntityFactories } from './types';
 const addFactoryAs = (name: string) => (factory: EntityFactory) =>
   ({ [name]: factory  });
 
-export const loadEntities = (audioContext: AudioContext) => {
+export const loadEntities = (
+  audioContext: AudioContext
+): Promise<EntityFactories> => {
   const factoriesRef: EntityFactories = {};
 
   return Promise.all([

@@ -1,8 +1,19 @@
 import { Entity } from './Entity';
+import { Level } from './Level';
+import { TileResolver } from './TileResolver';
 
 export interface GameContext {
   audioContext: AudioContext;
+  entityFactory: EntityFactories;
   deltaTime: number;
+}
+
+export interface TileCollisionContext {
+  entity: Entity;
+  match: TileMatch;
+  tileResolver: TileResolver;
+  gameContext: GameContext;
+  level: Level;
 }
 
 export type EntityFactory = () => Entity;
@@ -13,6 +24,9 @@ export type Listener<T> = {
   eventName: string;
   handler: Handler<T>;
 }
+
+export type TileHandler = (tileCollisionContext: TileCollisionContext) => void;
+export type TileHandlers = [TileHandler, TileHandler];
 
 export type KeyState = 1 | 0;
 
@@ -39,6 +53,8 @@ export interface Patterns {
 export type AnimationRouter = (entity: Entity) => string;
 export type TileMatch = {
   tile: any;
+  indexX: number;
+  indexY: number;
   x1: number;
   x2: number;
   y1: number;

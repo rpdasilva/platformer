@@ -66,36 +66,14 @@ const expandTiles = (
   return walkTiles(tiles, 0, 0);
 };
 
-const createCollisionGrid = (tiles: Tile[], patterns: Patterns) => {
+const createGrid = (tiles: Tile[], patterns: Patterns) => {
   const grid = new Matrix();
 
   expandTiles(tiles, patterns)
-    .forEach(({ tile, x, y }) => grid.set(x, y, { type: tile.type })
+    .forEach(({ tile, x, y }) => grid.set(x, y, tile)
   );
 
   return grid;
-}
-
-const createBackgroundGrid = (tiles: Tile[], patterns: Patterns) => {
-  const grid = new Matrix();
-
-  expandTiles(tiles, patterns)
-    .forEach(({ tile, x, y }) => grid.set(x, y, { name: tile.name })
-  );
-
-  return grid;
-}
-
-const setupCollistion = (levelSpec, level: Level) => {
-  const mergedTiles = flatten(
-    levelSpec.layers.map(layer => layer.tiles)
-  );
-
-  const collisionGrid = createCollisionGrid(
-    mergedTiles,
-    levelSpec.patterns
-  );
-  level.setCollisionGrid(collisionGrid);
 }
 
 const setupBackground = (
@@ -104,18 +82,19 @@ const setupBackground = (
   level: Level
 ) => {
   levelSpec.layers.forEach(layer => {
-    const backgroundGrid = createBackgroundGrid(
+    const grid = createGrid(
       layer.tiles,
       levelSpec.patterns
     );
 
     const backgroundLayer = createBackgroundLayer(
       level,
-      backgroundGrid,
+      grid,
       backgroundSprites
     );
 
     level.comp.addLayer(backgroundLayer);
+    level.tileCollider.addGrid(grid);
   });
 };
 
@@ -143,7 +122,6 @@ export const createLevelLoader = entityFactory => (name: string) =>
   .then(([levelSpec, backgroundSprites]) => {
     const level = new Level();
 
-    setupCollistion(levelSpec, level);
     setupBackground(levelSpec, backgroundSprites, level);
     setupEntities(levelSpec, level, entityFactory);
 
