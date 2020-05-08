@@ -21,8 +21,9 @@ export type EntityFactories = { [name: string]: () => Entity; };
 export type LoadEntity = (audioContext: AudioContext, entityFactories?: EntityFactories) => Promise<EntityFactory>;
 export type Handler<T> = (...args: T[]) => void;
 export type Listener<T> = {
-  eventName: string;
+  eventName: Symbol;
   handler: Handler<T>;
+  count?: number;
 }
 
 export type TileHandler = (tileCollisionContext: TileCollisionContext) => void;

@@ -1,6 +1,7 @@
 import { Entity, Trait } from '../Entity';
 import { Level } from '../Level';
 import { Vec2 } from '../math';
+import { Stomper } from './Stomper';
 import { GameContext } from '../../core/types';
 
 const DEFAULT_TIME = 300;
@@ -15,14 +16,14 @@ export class PlayerController extends Trait {
 
   constructor() {
     super(PlayerController.NAME);
+
+    this.listen(Stomper.EVENT_STOMP, () => {
+      this.score += 100
+    });
   }
 
   setPlayer(entity: Entity) {
     this.player = entity;
-
-    this.player.stomper.events.listen('stomp', () => {
-      this.score += 100
-    });
   }
 
   update(_: Entity, { deltaTime }: GameContext, level: Level) {

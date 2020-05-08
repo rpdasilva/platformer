@@ -14,13 +14,14 @@ import { Solid } from './traits/Solid';
 import { Spawner } from './traits/Spawner';
 import { Stomper } from './traits/Stomper';
 import { Velocity } from './traits/Velocity';
-import { TileMatch, GameContext } from './types';
 import { AudioBoard } from './AudioBoard';
-import { EventEmitter } from './EventEmitter';
+import { EventBuffer } from './EventBuffer';
+import { Handler, Listener, TileMatch, GameContext } from './types';
 
 export class Trait {
-  tasks = new Set<() => void>();
-  events = new EventEmitter();
+  static readonly EVENT_TASK = Symbol('task');
+
+  private listeners: Listener<any>[] = [];
 
   constructor(public NAME: string) {}
 
@@ -29,12 +30,19 @@ export class Trait {
   collides(us: Entity, them: Entity) {}
 
   queue(task: () => void) {
-    this.tasks.add(task);
+    this.listen(Trait.EVENT_TASK, task, 1);
   }
 
-  finalize() {
-    this.tasks.forEach(task => task());
-    this.tasks.clear();
+  finalize(entity: Entity) {
+    this.listeners = this.listeners.filter(listener => {
+      const { eventName, handler } = listener;
+      entity.events.process(eventName, handler);
+      return --listener.count;
+    });
+  }
+
+  listen<T>(eventName: Symbol, handler: Handler<T>, count = Infinity) {
+    this.listeners.push({ eventName, handler, count });
   }
 }
 
@@ -63,6 +71,7 @@ export abstract class Entity {
   lifetime = 0;
   audioBoard = new AudioBoard();
   sounds = new Set<string>();
+  events = new EventBuffer();
 
   draw(context: CanvasRenderingContext2D) {}
 
@@ -93,7 +102,9 @@ export abstract class Entity {
   }
 
   finalize() {
-    this.traits.forEach(trait => trait.finalize());
+    this.events.emit(Trait.EVENT_TASK);
+    this.traits.forEach(trait => trait.finalize(this));
+    this.events.clear();
   }
 
   playSounds(audioBoard: AudioBoard, audioContext: AudioContext) {

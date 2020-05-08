@@ -5,6 +5,7 @@ import { GameContext } from '../../core/types';
 export class Player extends Trait {
   static readonly NAME = 'player';
 
+  coins = 0;
   lives = 4;
   score = 0;
 
