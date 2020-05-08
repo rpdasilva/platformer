@@ -1,5 +1,6 @@
 {
     "spritesheet": "overworld",
+    "musicSheet": "overworld",
     "patterns": {
         "cloud-single": {
             "tiles": [

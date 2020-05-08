@@ -54,13 +54,17 @@ export const soundEffectUrls: AssetMap<Promise<string>> = {
   thwomp: Promise.resolve(require('../assets/audio/thwomp.ogg'))
 };
 
+export const audioSheetUrls: AssetMap<Promise<any>>  = {
+  mario: Promise.resolve(require('../assets/sounds/mario.json')),
+  cannon: Promise.resolve(require('../assets/sounds/cannon.json'))
+};
+
 export const musicUrls: AssetMap<Promise<string>> = {
   hurry: Promise.resolve(require('../assets/audio/music/hurry.ogg')),
   overworld: Promise.resolve(require('../assets/audio/music/overworld.ogg')),
   underworld: Promise.resolve(require('../assets/audio/music/underworld.ogg'))
 };
 
-export const audioSheetUrls: AssetMap<Promise<any>>  = {
-  mario: Promise.resolve(require('../assets/sounds/mario.json')),
-  cannon: Promise.resolve(require('../assets/sounds/cannon.json'))
+export const musicSheetUrls: AssetMap<Promise<any>>  = {
+  overworld: Promise.resolve(require('../assets/music/overworld.json'))
 };

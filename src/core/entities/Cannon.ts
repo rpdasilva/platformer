@@ -1,6 +1,6 @@
 import { Entity } from '../Entity';
 import { Level } from '../Level';
-import { loadAudioBoard } from '../loaders/audio';
+import { loadAudioBoard } from '../loaders/sound';
 import { AudioBoard } from '../AudioBoard';
 import { Spawner } from '../traits/Spawner';
 import { findPlayers } from '../player';

@@ -2,6 +2,7 @@ import { Compositor } from './Compositor';
 import { Entity } from './Entity';
 import { EntityCollider } from './EntityCollider';
 import { TileCollider } from './TileCollider';
+import { MusicController } from './MusicController';
 import { GameContext } from './types';
 
 export class Level {
@@ -11,6 +12,7 @@ export class Level {
   entities = new Set<Entity>();
   entityCollider = new EntityCollider(this.entities);
   tileCollider = new TileCollider();
+  music = new MusicController();
 
   update(gameContext: GameContext) {
     this.entities.forEach(entity => entity.update(gameContext, this));

@@ -7,6 +7,8 @@ import { createSpriteLayer } from '../layers/sprites';
 import { Matrix } from '../math';
 import { Patterns, Range, Tile } from '../types';
 import { Level } from '../Level';
+import { MusicController } from '../MusicController';
+import { loadMusicSheet } from './music';
 import { loadSpritesheet } from './spritesheet';
 
 
@@ -117,10 +119,12 @@ const setupEntities = (
 export const createLevelLoader = entityFactory => (name: string) =>
   levelUrls[name].then(levelSpec => Promise.all([
     levelSpec,
-    loadSpritesheet(levelSpec.spritesheet)
+    loadSpritesheet(levelSpec.spritesheet),
+    loadMusicSheet(levelSpec.musicSheet)
   ]))
-  .then(([levelSpec, backgroundSprites]) => {
+  .then(([levelSpec, backgroundSprites, musicPlayer]) => {
     const level = new Level();
+    level.music.setPlayer(musicPlayer);
 
     setupBackground(levelSpec, backgroundSprites, level);
     setupEntities(levelSpec, level, entityFactory);

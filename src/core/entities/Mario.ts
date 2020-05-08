@@ -1,6 +1,6 @@
 import { Drag } from '../constants';
 import { Entity } from '../Entity';
-import { loadAudioBoard } from '../loaders/audio';
+import { loadAudioBoard } from '../loaders/sound';
 import { loadSpritesheet } from '../loaders/spritesheet';
 import { Spritesheet } from '../Spritesheet';
 import { Jump } from '../traits/Jump';
