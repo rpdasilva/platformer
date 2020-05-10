@@ -6,7 +6,6 @@ export class EventBuffer {
   emit<T>(eventName: Symbol, ...args: T[]) {
     const event = { name: eventName, args };
     this.events.add(event);
-    console.log(this.events);
   }
 
   process<T>(eventName: Symbol, handler: Handler<T>) {

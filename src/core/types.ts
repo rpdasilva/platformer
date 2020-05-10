@@ -2,6 +2,8 @@ import { Entity } from './Entity';
 import { Level } from './Level';
 import { TileResolver } from './TileResolver';
 
+export type Nullable<T> = null | T;
+
 export interface GameContext {
   audioContext: AudioContext;
   entityFactory: EntityFactories;

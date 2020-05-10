@@ -25,12 +25,13 @@ const main = async (canvas: HTMLCanvasElement) => {
 
   const mario = createPlayer(entityFactory.mario());
   const playerEnv = createPlayerEnv(mario);
+  level.entities.add(mario); // Hack to work around entity removal on kill
   level.entities.add(playerEnv);
 
   level.comp.addLayers(
     createDebugCameraLayer(camera),
     createDebugCollisionLayer(level),
-    createDashboardLayer(font, playerEnv)
+    createDashboardLayer(font, level)
   );
 
   const input = setupKeyboard(mario);
@@ -55,7 +56,6 @@ const main = async (canvas: HTMLCanvasElement) => {
   );
 
   timer.start();
-  level.music.player.playTrack('main');
 };
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;

@@ -11,15 +11,9 @@ export class PlayerController extends Trait {
 
   player: Entity;
   checkpoint = new Vec2(0, 0);
-  time = DEFAULT_TIME;
-  score = 0;
 
   constructor() {
     super(PlayerController.NAME);
-
-    this.listen(Stomper.EVENT_STOMP, () => {
-      this.score += 100
-    });
   }
 
   setPlayer(entity: Entity) {
@@ -34,9 +28,6 @@ export class PlayerController extends Trait {
         this.checkpoint.y
       );
       level.entities.add(this.player);
-      this.time = DEFAULT_TIME;
-    } else {
-      this.time -= deltaTime * 2;
     }
   }
 }

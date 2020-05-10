@@ -5,6 +5,7 @@ import { Vec2 } from './math';
 import { Gravity } from './traits/Gravity';
 import { Jump } from './traits/Jump';
 import { Killable } from './traits/Killable';
+import { LevelTimer } from './traits/LevelTimer';
 import { Move } from './traits/Move';
 import { PendulumMove } from './traits/PendulumMove';
 import { Physics } from './traits/Physics';
@@ -50,6 +51,7 @@ export interface Entity {
   gravity?: Gravity;
   jump?: Jump;
   killable?: Killable;
+  levelTimer?: LevelTimer;
   move?: Move;
   pendulumMove?: PendulumMove;
   physics?: Physics;

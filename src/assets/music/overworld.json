@@ -1,5 +1,8 @@
 {
   "main": {
       "name": "overworld"
+  },
+  "hurry": {
+      "name": "hurry"
   }
 }

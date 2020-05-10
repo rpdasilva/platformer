@@ -4,10 +4,11 @@ import range from 'ramda/es/range';
 import { levelUrls } from '../constants';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
+import { LevelTimer } from '../traits/LevelTimer';
 import { Matrix } from '../math';
 import { Patterns, Range, Tile } from '../types';
 import { Level } from '../Level';
-import { MusicController } from '../MusicController';
+import { Entity } from '../Entity';
 import { loadMusicSheet } from './music';
 import { loadSpritesheet } from './spritesheet';
 
@@ -116,6 +117,22 @@ const setupEntities = (
   level.comp.addLayer(spriteLayer);
 }
 
+const createLevelTimer = () => {
+  const timer = new (class LevelTimerEntity extends Entity {});
+  timer.addTrait(new LevelTimer());
+
+  return timer;
+}
+
+const setupBehaviour = (level: Level) => {
+  const timer = createLevelTimer();
+  level.entities.add(timer);
+  level.events.listen(LevelTimer.EVENT_TIMER_OK, () =>
+    level.music.playTheme());
+  level.events.listen(LevelTimer.EVENT_TIMER_HURRY, () =>
+    level.music.playHurry());
+}
+
 export const createLevelLoader = entityFactory => (name: string) =>
   levelUrls[name].then(levelSpec => Promise.all([
     levelSpec,
@@ -128,6 +145,7 @@ export const createLevelLoader = entityFactory => (name: string) =>
 
     setupBackground(levelSpec, backgroundSprites, level);
     setupEntities(levelSpec, level, entityFactory);
+    setupBehaviour(level);
 
     return level;
   });
