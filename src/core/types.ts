@@ -6,6 +6,7 @@ export type Nullable<T> = null | T;
 
 export interface GameContext {
   audioContext: AudioContext;
+  videoContext: CanvasRenderingContext2D;
   entityFactory: EntityFactories;
   deltaTime: number;
 }
@@ -20,7 +21,7 @@ export interface TileCollisionContext {
 
 export type EntityFactory = () => Entity;
 export type EntityFactories = { [name: string]: () => Entity; };
-export type LoadEntity = (audioContext: AudioContext, entityFactories?: EntityFactories) => Promise<EntityFactory>;
+export type LoadEntity = (audioContext: AudioContext) => Promise<EntityFactory>;
 export type Handler<T> = (...args: T[]) => void;
 export type Listener<T> = {
   eventName: Symbol;

@@ -18,7 +18,7 @@ export const loadEntities = (
     loadGoomba(audioContext).then(addFactoryAs('goomba')),
     loadKoopa(audioContext).then(addFactoryAs('koopa')),
     loadBulletBill(audioContext).then(addFactoryAs('bulletBill')),
-    loadCannon(audioContext, factoriesRef).then(addFactoryAs('cannon'))
+    loadCannon(audioContext).then(addFactoryAs('cannon'))
   ])
   .then(factories => Object.assign(factoriesRef, ...factories));
 }

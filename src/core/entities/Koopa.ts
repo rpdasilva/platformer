@@ -1,6 +1,6 @@
 import { Entity, Trait } from '../Entity';
-import { loadSpritesheet } from '../loaders/spritesheet';
-import { Spritesheet } from '../Spritesheet';
+import { loadSpritesheet } from '../loaders/spriteSheet';
+import { SpriteSheet } from '../SpriteSheet';
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
@@ -104,7 +104,7 @@ export class Koopa extends Entity {
   behaviour: Behaviour;
 
   constructor(
-    private sprite: Spritesheet,
+    private sprite: SpriteSheet,
     private animationRouter: (entity: Entity) => string
   ) {
     super();
@@ -121,7 +121,7 @@ export class Koopa extends Entity {
   }
 }
 
-const createAnimations = (sprite: Spritesheet) => {
+const createAnimations = (sprite: SpriteSheet) => {
   const walkAnim = sprite.animations.get('walk');
   const wakeAnim = sprite.animations.get('wake');
 
@@ -146,7 +146,7 @@ const createAnimations = (sprite: Spritesheet) => {
 export const loadKoopa: LoadEntity = () =>
   loadSpritesheet('koopa').then(createKoopaFactory);
 
-const createKoopaFactory = (sprite: Spritesheet) => {
+const createKoopaFactory = (sprite: SpriteSheet) => {
   const animationRouter = createAnimations(sprite);
 
   return () => {

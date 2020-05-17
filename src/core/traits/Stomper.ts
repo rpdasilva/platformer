@@ -2,7 +2,7 @@ import { Entity, Trait } from '../Entity';
 
 export class Stomper extends Trait {
   static readonly NAME = 'stomper';
-  static readonly EVENT_STOMP = Symbol('stomp');
+  static readonly EVENT_STOMP = Symbol('Stomp');
 
   bounceSpeed = 250;
 

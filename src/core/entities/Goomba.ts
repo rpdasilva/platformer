@@ -1,6 +1,6 @@
 import { Entity, Trait } from '../Entity';
-import { loadSpritesheet } from '../loaders/spritesheet';
-import { Spritesheet } from '../Spritesheet';
+import { loadSpritesheet } from '../loaders/spriteSheet';
+import { SpriteSheet } from '../SpriteSheet';
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
@@ -37,7 +37,7 @@ class Behaviour extends Trait {
 
 export class Goomba extends Entity {
   constructor(
-    private sprite: Spritesheet,
+    private sprite: SpriteSheet,
     private animationRouter: (entity: Entity) => string
   ) {
     super();
@@ -48,7 +48,7 @@ export class Goomba extends Entity {
   }
 }
 
-const createAnimations = (sprite: Spritesheet) => {
+const createAnimations = (sprite: SpriteSheet) => {
   const walkAnim = sprite.animations.get('walk');
 
   return (goomba: Goomba) => {
@@ -63,7 +63,7 @@ const createAnimations = (sprite: Spritesheet) => {
 export const loadGoomba: LoadEntity = () =>
   loadSpritesheet('goomba').then(createGoombaFactory);
 
-const createGoombaFactory = (sprite: Spritesheet) => {
+const createGoombaFactory = (sprite: SpriteSheet) => {
   const animationRouter = createAnimations(sprite);
 
   return () => {

@@ -1,7 +1,7 @@
-import { Entity, Trait } from '../Entity';
-import { Level } from '../Level';
+import { Trait } from '../Entity';
 import { Stomper } from '../traits/Stomper';
-import { GameContext } from '../../core/types';
+
+const COIN_THRESHOLD = 100;
 
 export class Player extends Trait {
   static readonly NAME = 'player';
@@ -18,8 +18,18 @@ export class Player extends Trait {
     this.listen(Stomper.EVENT_STOMP, () => this.score += 100);
   }
 
-  update(entity: Entity, { deltaTime }: GameContext, level: Level) {
-    // entity.pos.x += entity.vel.x * deltaTime;
-    // entity.pos.y += entity.vel.y * deltaTime;
+  addCoins(count: number) {
+    this.coins += count;
+    this.queue(entity => entity.sounds.add('coin'));
+
+    if (this.coins >= COIN_THRESHOLD) {
+      const lives = Math.floor(this.coins / COIN_THRESHOLD);
+      this.addLives(lives);
+      this.coins = this.coins % COIN_THRESHOLD;
+    }
+  }
+
+  addLives(count: number) {
+    this.lives += count;
   }
 }

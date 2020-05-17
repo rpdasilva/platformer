@@ -9,7 +9,7 @@ export class MusicPlayer {
     audio.src = url;
 
     audio.addEventListener('timeupdate', function(){
-      if(audio.currentTime >= audio.duration - AUDIO_LOOP_BUFFER){
+      if(audio.loop && audio.currentTime >= audio.duration - AUDIO_LOOP_BUFFER){
         audio.currentTime = 0;
       }
     });
@@ -18,11 +18,15 @@ export class MusicPlayer {
   }
 
   playTrack(name: string) {
-    [...this.tracks.values()].forEach(track => track.pause());
+    const audio = this.tracks.get(name);
 
-    const audio = this.tracks.get(name)
+    this.pauseAll();
     audio.play();
 
     return audio;
+  }
+
+  pauseAll() {
+    [...this.tracks.values()].forEach(track => track.pause());
   }
 }

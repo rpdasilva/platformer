@@ -4,7 +4,7 @@ import { loadAudioBoard } from '../loaders/sound';
 import { AudioBoard } from '../AudioBoard';
 import { Spawner } from '../traits/Spawner';
 import { findPlayers } from '../player';
-import { LoadEntity, EntityFactories } from '../types';
+import { LoadEntity, GameContext } from '../types';
 
 const HOLD_FIRE_THRESHOLD = 30;
 
@@ -16,13 +16,13 @@ export class Cannon extends Entity {
   }
 }
 
-export const loadCannon: LoadEntity = (audioContext: AudioContext, entityFactories: EntityFactories) => {
+export const loadCannon: LoadEntity = (audioContext: AudioContext) => {
   return loadAudioBoard('cannon', audioContext)
-    .then(audioBoard => createCannonFactory(audioBoard, entityFactories));
+    .then(audioBoard => createCannonFactory(audioBoard));
 }
 
-const createCannonFactory = (audioBoard: AudioBoard, entityFactories: EntityFactories) => {
-  const spawnBullet = (entity: Entity, level: Level) => {
+const createCannonFactory = (audioBoard: AudioBoard) => {
+  const spawnBullet = (entity: Entity, gameContext: GameContext, level: Level) => {
     const players = findPlayers(level);
     const hasClosePlayer = players.some(player => (
       player.pos.x > entity.pos.x - HOLD_FIRE_THRESHOLD
@@ -34,7 +34,7 @@ const createCannonFactory = (audioBoard: AudioBoard, entityFactories: EntityFact
     }
 
     const direction = players[0].pos.x > entity.pos.x ? 1 : -1;
-    const bulletBill = entityFactories.bulletBill();
+    const bulletBill = gameContext.entityFactory.bulletBill();
     bulletBill.pos.copy(entity.pos);
     bulletBill.vel.set(80 * direction, 0);
 

@@ -13,25 +13,30 @@ const getTimerTraits = (level: Level) =>
     .map(entity => entity[LevelTimer.NAME]);
 
 export const createDashboardLayer = (font: Font, level: Level) => {
-  const line = (lineNumber = 1)  => lineNumber * font.size;
   const score = (value = 0) => value.toString().padStart(6, '0');
   const time = (value = 0) => value.toFixed().toString().padStart(3, '0');
   const coins = (value = 0) => `@x${value.toString().padStart(2, '0')}`;
 
-  const [playerTrait] = getPlayerTraits(level);
   const [timerTrait] = getTimerTraits(level);
 
   return function drawDashboardLayer (context: CanvasRenderingContext2D) {
+    const [playerTrait] = getPlayerTraits(level);
 
-    font.print(playerTrait.name, context, 16, line(1));
-    font.print(score(playerTrait.score), context, 16, line(2));
+    font.print(playerTrait.name, context, font.em(2), font.em(1));
+    font.print(score(playerTrait.score), context, font.em(2), font.em(2));
 
-    font.print(coins(playerTrait.coins), context, 96, line(2));
+    // DEBUG
+    // font.print('+'+playerTrait.lives.toString().padStart(3, '0'), context, 96, font.em(1));
 
-    font.print('WORLD', context, 152, line(1));
-    font.print('1-1', context, 160, line(2));
+    font.print(coins(playerTrait.coins), context, font.em(12), font.em(2));
 
-    font.print('TIME', context, 208, line(1));
-    font.print(time(timerTrait.currentTime), context, 216, line(2));
+    font.print('WORLD', context, font.em(19), font.em(1));
+
+    level.name.match(/.{1,6}/g).forEach((chunk, i) => {
+      font.print(chunk, context, font.em(20), font.em(2 + i));
+    });
+
+    font.print('TIME', context, font.em(26), font.em(1));
+    font.print(time(timerTrait.currentTime), context, font.em(27), font.em(2));
   }
 };

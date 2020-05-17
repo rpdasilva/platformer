@@ -3,14 +3,14 @@ import range from 'ramda/es/range';
 import { createBuffer, getContext } from '../../lib/canvas';
 import { Level } from '../Level';
 import { Matrix } from '../math';
-import { Spritesheet } from '../Spritesheet';
+import { SpriteSheet } from '../SpriteSheet';
 import { TileResolver } from '../TileResolver';
 import { Camera } from '../Camera';
 
 export const createBackgroundLayer = (
   level: Level,
   tiles: Matrix,
-  sprites: Spritesheet
+  sprites: SpriteSheet
 ) => {
   const resolver = new TileResolver(tiles);
   const tileSize = resolver.tileSize;

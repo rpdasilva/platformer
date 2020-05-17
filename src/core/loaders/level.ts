@@ -1,17 +1,18 @@
 import flatten from 'ramda/es/flatten';
 import range from 'ramda/es/range';
 
-import { levelUrls } from '../constants';
+import { levelUrls, patternUrls } from '../constants';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
 import { LevelTimer } from '../traits/LevelTimer';
+import { Trigger } from '../traits/Trigger';
+import { Player } from '../traits/Player';
 import { Matrix } from '../math';
 import { Patterns, Range, Tile } from '../types';
 import { Level } from '../Level';
 import { Entity } from '../Entity';
 import { loadMusicSheet } from './music';
-import { loadSpritesheet } from './spritesheet';
-
+import { loadSpritesheet } from './spriteSheet';
 
 const createSpan = (
   xStart: number,
@@ -82,12 +83,13 @@ const createGrid = (tiles: Tile[], patterns: Patterns) => {
 const setupBackground = (
   levelSpec,
   backgroundSprites,
+  patterns,
   level: Level
 ) => {
   levelSpec.layers.forEach(layer => {
     const grid = createGrid(
       layer.tiles,
-      levelSpec.patterns
+      patterns
     );
 
     const backgroundLayer = createBackgroundLayer(
@@ -117,6 +119,31 @@ const setupEntities = (
   level.comp.addLayer(spriteLayer);
 }
 
+const createTrigger = () => {
+  const trigger = new (class TriggerEntity extends Entity {});
+  trigger.addTrait(new Trigger());
+
+  return trigger;
+}
+
+const setupTriggers = (levelSpec, level: Level) => {
+  const { triggers = [] } = levelSpec;
+
+  triggers.forEach(triggerSpec => {
+    const entity = createTrigger();
+    const trigger = entity[Trigger.NAME];
+
+    trigger.conditions.push(
+      (triggerEntity, collisions, gameContext, level) =>
+        level.events.emit(Level.EVENT_TRIGGER, triggerSpec, triggerEntity, collisions)
+    );
+
+    entity.size.set(64, 64);
+    entity.pos.set(triggerSpec.pos[0], triggerSpec.pos[1]);
+    level.entities.add(entity);
+  })
+}
+
 const createLevelTimer = () => {
   const timer = new (class LevelTimerEntity extends Entity {});
   timer.addTrait(new LevelTimer());
@@ -133,18 +160,23 @@ const setupBehaviour = (level: Level) => {
     level.music.playHurry());
 }
 
+const loadPattern = (name: string) => patternUrls[name];
+
 export const createLevelLoader = entityFactory => (name: string) =>
   levelUrls[name].then(levelSpec => Promise.all([
     levelSpec,
-    loadSpritesheet(levelSpec.spritesheet),
-    loadMusicSheet(levelSpec.musicSheet)
+    loadSpritesheet(levelSpec.spriteSheet),
+    loadMusicSheet(levelSpec.musicSheet),
+    loadPattern(levelSpec.patterns)
   ]))
-  .then(([levelSpec, backgroundSprites, musicPlayer]) => {
+  .then(([levelSpec, backgroundSprites, musicPlayer, patterns]) => {
     const level = new Level();
+    level.name = levelSpec.name;
     level.music.setPlayer(musicPlayer);
 
-    setupBackground(levelSpec, backgroundSprites, level);
+    setupBackground(levelSpec, backgroundSprites, patterns, level);
     setupEntities(levelSpec, level, entityFactory);
+    setupTriggers(levelSpec, level);
     setupBehaviour(level);
 
     return level;

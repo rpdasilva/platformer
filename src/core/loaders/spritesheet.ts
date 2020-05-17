@@ -1,10 +1,10 @@
 import { createAnimation } from '../animation';
 import { spriteSheetUrls, spriteUrls } from '../constants';
-import { Spritesheet } from '../Spritesheet';
+import { SpriteSheet } from '../SpriteSheet';
 import { loadImage } from './image';
 
 const defineTiles = (
-  sprites: Spritesheet,
+  sprites: SpriteSheet,
   tiles = []
 ) => tiles.forEach(({ name, index }: {
   name: string;
@@ -12,7 +12,7 @@ const defineTiles = (
 }) => sprites.defineTile(name, ...index));
 
 const defineRects = (
-  sprites: Spritesheet,
+  sprites: SpriteSheet,
   rects = []
 ) => rects.forEach(({ name, rect }: {
   name: string;
@@ -20,7 +20,7 @@ const defineRects = (
 }) => sprites.define(name, ...rect));
 
 const defineAnimations = (
-  sprites: Spritesheet,
+  sprites: SpriteSheet,
   animations = []
 ) => animations.forEach(({ name, frames, frameLen }: {
   name: string;
@@ -34,7 +34,7 @@ export const loadSpritesheet = (name: string) => spriteSheetUrls[name]
     spriteUrls[sheetSpec.imageName].then(loadImage)
   ]))
   .then(([sheetSpec, image]) => {
-    const sprites = new Spritesheet(
+    const sprites = new SpriteSheet(
       image,
       sheetSpec.tileW,
       sheetSpec.tileH

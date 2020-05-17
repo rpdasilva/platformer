@@ -1,6 +1,6 @@
 import { spriteUrls } from '../constants';
 import { Font } from '../Font';
-import { Spritesheet } from '../Spritesheet';
+import { SpriteSheet } from '../SpriteSheet';
 import { loadImage } from './image';
 
 const CHARS = [
@@ -13,7 +13,7 @@ export const loadFont = () =>
   spriteUrls.font
     .then(loadImage)
     .then(image => {
-      const sprites = new Spritesheet(image, 8, 8);
+      const sprites = new SpriteSheet(image, 8, 8);
       const tileSize = 8;
       const rowLength = image.width;
 

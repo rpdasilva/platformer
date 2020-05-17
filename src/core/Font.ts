@@ -1,7 +1,7 @@
-import { Spritesheet } from './Spritesheet';
+import { SpriteSheet } from './SpriteSheet';
 
 export class Font {
-  constructor(public sprites: Spritesheet, public size: number) {}
+  constructor(public sprites: SpriteSheet, public size: number) {}
 
   print(
     text: string,
@@ -17,5 +17,9 @@ export class Font {
         y
       )
     );
+  }
+
+  em(value = 1) {
+    return value * this.size;
   }
 }

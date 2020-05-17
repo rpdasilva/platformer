@@ -1,6 +1,6 @@
 import { createBuffer, getContext } from '../lib/canvas';
 
-export class Spritesheet {
+export class SpriteSheet {
   tiles = new Map<string, HTMLCanvasElement[]>();
   animations = new Map<string, (distance: number) => string>();
 

@@ -11,7 +11,7 @@ export class EventBuffer {
   process<T>(eventName: Symbol, handler: Handler<T>) {
     this.events.forEach(event => {
       if (event.name === eventName) {
-        handler(event.args);
+        handler(...event.args);
       }
     })
   }

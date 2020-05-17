@@ -15,15 +15,15 @@ export class Spawner extends Trait {
     super(Spawner.NAME);
   }
 
-  spawn(entity: Entity, level: Level) {
-    this.spawners.forEach(spawner => spawner(entity, level));
+  spawn(entity: Entity, gameContext: GameContext, level: Level) {
+    this.spawners.forEach(spawner => spawner(entity, gameContext, level));
   }
 
-  update(entity: Entity, { deltaTime }: GameContext, level: Level) {
-    this.coolDownTime -= deltaTime;
+  update(entity: Entity, gameContext: GameContext, level: Level) {
+    this.coolDownTime -= gameContext.deltaTime;
 
     if (this.coolDownTime <= 0) {
-      this.spawn(entity, level);
+      this.spawn(entity, gameContext, level);
       this.coolDownTime = this.interval;
     }
   }

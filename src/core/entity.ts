@@ -14,13 +14,14 @@ import { PlayerController } from './traits/PlayerController';
 import { Solid } from './traits/Solid';
 import { Spawner } from './traits/Spawner';
 import { Stomper } from './traits/Stomper';
+import { Trigger } from './traits/Trigger';
 import { Velocity } from './traits/Velocity';
 import { AudioBoard } from './AudioBoard';
 import { EventBuffer } from './EventBuffer';
 import { Handler, Listener, TileMatch, GameContext } from './types';
 
 export class Trait {
-  static readonly EVENT_TASK = Symbol('task');
+  static readonly EVENT_TASK = Symbol('Task');
 
   private listeners: Listener<any>[] = [];
 
@@ -30,7 +31,7 @@ export class Trait {
   obstruct(context: Entity, side: Sides, match: TileMatch) {}
   collides(us: Entity, them: Entity) {}
 
-  queue(task: () => void) {
+  queue(task: (entity: Entity) => void) {
     this.listen(Trait.EVENT_TASK, task, 1);
   }
 
@@ -60,6 +61,7 @@ export interface Entity {
   solid?: Solid;
   spawner?: Spawner;
   stomper?: Stomper;
+  trigger?: Trigger;
   velocity?: Velocity;
 }
 
@@ -104,7 +106,7 @@ export abstract class Entity {
   }
 
   finalize() {
-    this.events.emit(Trait.EVENT_TASK);
+    this.events.emit(Trait.EVENT_TASK, this);
     this.traits.forEach(trait => trait.finalize(this));
     this.events.clear();
   }

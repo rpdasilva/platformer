@@ -7,8 +7,8 @@ const HURRY_TIME = 100;
 
 export class LevelTimer extends Trait {
   static readonly NAME = 'levelTimer';
-  static readonly EVENT_TIMER_HURRY = Symbol('timerHurry');
-  static readonly EVENT_TIMER_OK = Symbol('timerOk');
+  static readonly EVENT_TIMER_HURRY = Symbol('Timer Hurry');
+  static readonly EVENT_TIMER_OK = Symbol('Timer OK');
 
   totalTime = TOTAL_TIME;
   currentTime = TOTAL_TIME;

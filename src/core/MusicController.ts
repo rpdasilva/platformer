@@ -22,4 +22,8 @@ export class MusicController {
       this.playTheme(1.4);
     }, { once: true });
   }
+
+  pause() {
+    this.player.pauseAll();
+  }
 }

@@ -16,7 +16,7 @@ export class Compositor {
 
   draw(
     context: CanvasRenderingContext2D,
-    camera: Camera
+    camera?: Camera
   ) {
     this.layers.forEach(layer => layer(context, camera));
   }

@@ -1,8 +1,8 @@
 import { Drag } from '../constants';
 import { Entity } from '../Entity';
 import { loadAudioBoard } from '../loaders/sound';
-import { loadSpritesheet } from '../loaders/spritesheet';
-import { Spritesheet } from '../Spritesheet';
+import { loadSpritesheet } from '../loaders/spriteSheet';
+import { SpriteSheet } from '../SpriteSheet';
 import { Jump } from '../traits/Jump';
 import { Killable } from '../traits/Killable';
 import { Move } from '../traits/Move';
@@ -14,7 +14,7 @@ import { AudioBoard } from '../AudioBoard';
 
 export class Mario extends Entity {
   constructor(
-    private sprite: Spritesheet,
+    private sprite: SpriteSheet,
     private runAnimRouter: (entity: Mario) => string,
     public audioBoard: AudioBoard
   ) {
@@ -31,7 +31,7 @@ export class Mario extends Entity {
   }
 }
 
-const createRunAnimation = (sprite: Spritesheet) => {
+const createRunAnimation = (sprite: SpriteSheet) => {
   const runAnim = sprite.animations.get('run');
 
   return (mario: Mario) => {
@@ -60,7 +60,7 @@ export const loadMario: LoadEntity = (audioContext: AudioContext) => {
     .then(([spriteSheet, audioBoard]) => createMarioFactory(spriteSheet, audioBoard));
 }
 
-const createMarioFactory = (sprite: Spritesheet, audioBoard: AudioBoard) => {
+const createMarioFactory = (sprite: SpriteSheet, audioBoard: AudioBoard) => {
   const runAnimRouter = createRunAnimation(sprite);
 
   return () => {

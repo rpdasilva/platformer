@@ -3,8 +3,9 @@ import { Level } from './Level';
 import { TileResolver } from './TileResolver';
 import { Matrix } from './math';
 import { GameContext, TileCollisionContext, TileHandlers, TileMatch } from './types';
-import { groundTileHandlers } from './tiles/ground';
+import { coinTileHandlers } from './tiles/coin';
 import { brickTileHandlers } from './tiles/brick';
+import { groundTileHandlers } from './tiles/ground';
 
 const getSideByDirection = (dir: 'x' | 'y', entity: Entity) => {
   const sides = {
@@ -17,8 +18,9 @@ const getSideByDirection = (dir: 'x' | 'y', entity: Entity) => {
 }
 
 const handlers: { [tileType: string]: TileHandlers } = {
-  ground: groundTileHandlers,
-  brick: brickTileHandlers
+  coin: coinTileHandlers,
+  brick: brickTileHandlers,
+  ground: groundTileHandlers
 };
 
 export class TileCollider {
