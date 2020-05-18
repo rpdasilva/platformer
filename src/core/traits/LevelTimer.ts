@@ -1,4 +1,5 @@
-import { Entity, Trait } from '../Entity';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { Level } from '../Level';
 import { GameContext, Nullable } from '../../core/types';
 
@@ -6,7 +7,6 @@ const TOTAL_TIME = 300;
 const HURRY_TIME = 100;
 
 export class LevelTimer extends Trait {
-  static readonly NAME = 'levelTimer';
   static readonly EVENT_TIMER_HURRY = Symbol('Timer Hurry');
   static readonly EVENT_TIMER_OK = Symbol('Timer OK');
 
@@ -14,12 +14,7 @@ export class LevelTimer extends Trait {
   currentTime = TOTAL_TIME;
   hurryEmitted: Nullable<boolean> = null;
 
-
-  constructor() {
-    super(LevelTimer.NAME);
-  }
-
-  update(entity: Entity, { deltaTime }: GameContext, level: Level) {
+  update(_: Entity, { deltaTime }: GameContext, level: Level) {
     this.currentTime -= deltaTime * 2;
 
     if (this.hurryEmitted !== true && this.currentTime < HURRY_TIME) {

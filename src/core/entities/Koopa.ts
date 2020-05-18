@@ -1,10 +1,12 @@
-import { Entity, Trait } from '../Entity';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { loadSpritesheet } from '../loaders/spriteSheet';
 import { SpriteSheet } from '../SpriteSheet';
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
 import { Solid } from '../traits/Solid';
+import { Stomper } from '../traits/Stomper';
 import { GameContext, LoadEntity } from '../types';
 
 const STATE_WALKING = Symbol('walking');
@@ -17,16 +19,12 @@ class Behaviour extends Trait {
   hideDuration = 5;
   panicSpeed = 300;
 
-  constructor() {
-    super('behaviour');
-  }
-
   collides(us: Koopa, them: Entity) {
-    if (us.killable.dead) {
+    if (us.getTrait(Killable).dead) {
       return;
     }
 
-    if (them.stomper) {
+    if (them.hasTrait(Stomper)) {
       if (them.vel.y > us.vel.y) {
         this.handleStomp(us, them);
       }
@@ -38,8 +36,8 @@ class Behaviour extends Trait {
 
   handleKick(us: Koopa, them: Entity) {
     if (this.state === STATE_WALKING) {
-      if (them.killable) {
-        them.killable.kill();
+      if (them.hasTrait(Killable)) {
+        them.getTrait(Killable).kill();
       }
     }
     else if (this.state === STATE_HIDING) {
@@ -50,11 +48,11 @@ class Behaviour extends Trait {
       const impactDir = Math.sign(us.pos.x - them.pos.x);
 
       if (
-        them.killable
+        them.hasTrait(Killable)
         && travelDir
         && travelDir !== impactDir
       ) {
-        them.killable.kill();
+        them.getTrait(Killable).kill();
       }
     }
   }
@@ -64,28 +62,31 @@ class Behaviour extends Trait {
       this.hide(us);
     }
     else if (this.state === STATE_HIDING) {
-      us.killable.kill();
+      us.getTrait(Killable).kill();
       us.vel.set(100, -200);
-      us.solid.obstructs = false;
+      us.getTrait(Solid).obstructs = false;
     }
   }
 
   panic(us: Koopa, them: Entity) {
+    const pendulumMoveTrait = us.getTrait(PendulumMove);
     this.state = STATE_PANIC;
-    us.pendulumMove.enabled = true;
-    us.pendulumMove.speed = this.panicSpeed * Math.sign(them.vel.x);
+    pendulumMoveTrait.enabled = true;
+    pendulumMoveTrait.speed = this.panicSpeed * Math.sign(them.vel.x);
   }
 
   hide(us: Koopa) {
+    const pendulumMoveTrait = us.getTrait(PendulumMove);
     us.vel.x = 0;
-    us.pendulumMove.enabled = false;
+    pendulumMoveTrait.enabled = false;
     this.state = STATE_HIDING;
     this.hideTime = 0;
   }
 
   unhide(us: Koopa) {
-    us.pendulumMove.enabled = true;
-    us.pendulumMove.reset();
+    const pendulumMoveTrait = us.getTrait(PendulumMove);
+    pendulumMoveTrait.enabled = true;
+    pendulumMoveTrait.reset();
     this.state = STATE_WALKING;
   }
 
@@ -126,15 +127,16 @@ const createAnimations = (sprite: SpriteSheet) => {
   const wakeAnim = sprite.animations.get('wake');
 
   return (koopa: Koopa) => {
+    const behaviourTrait = koopa.getTrait(Behaviour);
     if (
-      koopa.behaviour.state === STATE_HIDING
-      && koopa.behaviour.hideTime > 3
+      behaviourTrait.state === STATE_HIDING
+      && behaviourTrait.hideTime > 3
     ) {
       return wakeAnim(koopa.lifetime);
     }
     else if (
-      koopa.behaviour.state === STATE_HIDING
-      || koopa.behaviour.state === STATE_PANIC
+      behaviourTrait.state === STATE_HIDING
+      || behaviourTrait.state === STATE_PANIC
     ) {
       return 'hiding';
     }

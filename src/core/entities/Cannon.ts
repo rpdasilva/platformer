@@ -23,7 +23,7 @@ export const loadCannon: LoadEntity = (audioContext: AudioContext) => {
 
 const createCannonFactory = (audioBoard: AudioBoard) => {
   const spawnBullet = (entity: Entity, gameContext: GameContext, level: Level) => {
-    const players = findPlayers(level);
+    const players = findPlayers(level.entities);
     const hasClosePlayer = players.some(player => (
       player.pos.x > entity.pos.x - HOLD_FIRE_THRESHOLD
       && player.pos.x < entity.pos.x + HOLD_FIRE_THRESHOLD

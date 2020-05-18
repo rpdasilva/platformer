@@ -11,8 +11,8 @@ export const createProgressScreenLayer = (font: Font, level: Level) => {
   const lives = (value = 0) => `x${value.toString().padStart(3, ' ')}`;
 
   return function drawProgressScreenLayer (context: CanvasRenderingContext2D) {
-    const [entity] = findPlayers(level);
-    const playerTrait = entity[Player.NAME];
+    const [entity] = findPlayers(level.entities);
+    const playerTrait = entity.getTrait(Player);
 
     `WORLD ${level.name}`.match(/.{1,9}/g).forEach((chunk, i) => {
       font.print(chunk, context, font.em(12), font.em(12 + i));

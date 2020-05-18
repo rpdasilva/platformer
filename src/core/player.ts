@@ -1,5 +1,4 @@
 import { Entity } from './Entity';
-import { Level } from './Level';
 import { Player } from './traits/Player';
 import { PlayerController } from './traits/PlayerController';
 
@@ -15,10 +14,11 @@ export const createPlayerEnv = (playerEntity: Entity) => {
   return playerEnv;
 };
 
-export const createPlayer = (entity: Entity) => {
-  entity.addTrait(new Player());
-  return entity;
+export const makePlayer = (entity: Entity, name: string) => {
+  const player = new Player();
+  player.name = name;
+  entity.addTrait(player);
 };
 
-export const findPlayers = (level: Level) =>
-  [...level.entities].filter(entity => entity.hasTrait(Player.NAME));
+export const findPlayers = (entities: Entity[] | Set<Entity>) =>
+  [...entities].filter(entity => entity.hasTrait(Player));

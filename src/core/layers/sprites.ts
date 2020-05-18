@@ -18,8 +18,8 @@ export const createSpriteLayer = (
 
       context.drawImage(
         spriteBuffer,
-        entity.pos.x - camera.pos.x,
-        entity.pos.y - camera.pos.y
+        Math.floor(entity.pos.x - camera.pos.x),
+        Math.floor(entity.pos.y - camera.pos.y)
       );
     });
   }

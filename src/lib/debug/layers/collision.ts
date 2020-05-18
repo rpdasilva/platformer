@@ -9,7 +9,7 @@ const createDrawBox = (
 ) => (x: number, y: number, w: number, h: number) => {
   context.strokeStyle = color;
   context.beginPath();
-  context.rect(x, y, w, h);
+  context.rect(Math.floor(x), Math.floor(y), w, h);
   context.stroke();
 }
 

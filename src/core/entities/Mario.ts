@@ -22,12 +22,14 @@ export class Mario extends Entity {
   }
 
   draw(context: CanvasRenderingContext2D) {
-    const flip = this.move.heading < 0;
+    const moveTrait = this.getTrait(Move);
+    const flip = moveTrait.heading < 0;
     this.sprite.draw(this.runAnimRouter(this), context, 0, 0, flip);
   }
 
   turbo(enabled: KeyState) {
-    this.move.dragFactor = enabled ? Drag.LOW : Drag.HIGH
+    const moveTrait = this.getTrait(Move);
+    moveTrait.dragFactor = enabled ? Drag.LOW : Drag.HIGH
   }
 }
 
@@ -35,18 +37,21 @@ const createRunAnimation = (sprite: SpriteSheet) => {
   const runAnim = sprite.animations.get('run');
 
   return (mario: Mario) => {
-    if (mario.jump.falling) {
+    const jumpTrait = mario.getTrait(Jump);
+    if (jumpTrait.falling) {
       return 'jump';
     }
-    if (mario.move.distance > 0) {
+
+    const moveTrait = mario.getTrait(Move);
+    if (moveTrait.distance > 0) {
       if (
-        (mario.vel.x > 0 && mario.move.dir < 0)
-        || (mario.vel.x < 0 && mario.move.dir > 0)
+        (mario.vel.x > 0 && moveTrait.dir < 0)
+        || (mario.vel.x < 0 && moveTrait.dir > 0)
       ) {
         return 'brake';
       }
 
-      return runAnim(mario.move.distance);
+      return runAnim(moveTrait.distance);
     }
     return 'idle';
   }
@@ -73,7 +78,7 @@ const createMarioFactory = (sprite: SpriteSheet, audioBoard: AudioBoard) => {
     mario.addTrait(new Stomper());
     mario.addTrait(new Killable());
 
-    mario.killable.removeTime = 0.3;
+    mario.getTrait(Killable).removeTime = 0.3;
     mario.vel.y = -3;
 
     return mario;

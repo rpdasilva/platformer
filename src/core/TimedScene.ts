@@ -1,7 +1,7 @@
 import { Scene } from './Scene';
 import { GameContext } from './types';
 
-export class CompositionScene extends Scene {
+export class TimedScene extends Scene {
   countDown = 2;
 
   update(gameContext: GameContext) {

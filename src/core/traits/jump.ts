@@ -1,10 +1,9 @@
 import { Sides } from '../constants';
-import { Entity, Trait } from '../Entity';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { GameContext } from '../types';
 
 export class Jump extends Trait {
-  static readonly NAME = 'jump';
-
   enabled = 0;
   duration = 0.25;
   velocity = 200;
@@ -12,10 +11,6 @@ export class Jump extends Trait {
   engagedTime = 0;
   requestTime = 0;
   gracePeriod = 0.1;
-
-  constructor() {
-    super(Jump.NAME);
-  }
 
   get falling() {
     return this.enabled < 0;

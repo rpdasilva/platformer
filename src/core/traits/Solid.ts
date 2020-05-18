@@ -1,15 +1,10 @@
 import { Sides } from '../constants';
-import { Entity, Trait } from '../Entity';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { TileMatch } from '../types';
 
 export class Solid extends Trait {
-  static readonly NAME = 'solid';
-
   obstructs = true;
-
-  constructor() {
-    super(Solid.NAME);
-  }
 
   obstruct(entity: Entity, side: Sides, match: TileMatch) {
     if (!this.obstructs) {

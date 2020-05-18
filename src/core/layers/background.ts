@@ -58,8 +58,8 @@ export const createBackgroundLayer = (
 
     context.drawImage(
       buffer,
-      -camera.pos.x % tileSize,
-      -camera.pos.y
+      Math.floor(-camera.pos.x % tileSize),
+      Math.floor(-camera.pos.y)
     );
   }
 };

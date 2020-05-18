@@ -1,33 +1,32 @@
-import { Entity, Trait } from '../Entity';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { Level } from '../Level';
 import { loadSpritesheet } from '../loaders/spriteSheet';
 import { SpriteSheet } from '../SpriteSheet';
-import { Killable } from '../traits/Killable';
 import { Gravity } from '../traits/Gravity';
+import { Killable } from '../traits/Killable';
+import { Stomper } from '../traits/Stomper';
 import { Velocity } from '../traits/Velocity';
 import { LoadEntity, GameContext } from '../types';
 
 class Behaviour extends Trait {
   private gravity = new Gravity();
 
-  constructor() {
-    super('behaviour');
-  }
-
   collides(us: BulletBill, them: Entity) {
-    if (us.killable.dead) {
+    const killableTrait = us.getTrait(Killable);
+    if (killableTrait.dead) {
       return;
     }
 
-    if (them.stomper) {
+    if (them.hasTrait(Stomper)) {
       if (them.vel.y > us.vel.y) {
         this.stop(us);
-        us.killable.kill();
+        killableTrait.kill();
         us.vel.set(100, -200);
       }
-      else if (them.killable) {
-        them.stomper.bounce(them, us);
-        them.killable.kill();
+      else if (them.hasTrait(Killable)) {
+        them.getTrait(Stomper).bounce(them, us);
+        them.getTrait(Killable).kill();
       }
     }
   }
@@ -37,7 +36,7 @@ class Behaviour extends Trait {
   }
 
   update(entity: Entity, gameContext: GameContext, level: Level) {
-    if (entity.killable.dead) {
+    if (entity.getTrait(Killable).dead) {
       this.gravity.update(entity, gameContext, level);
     }
   }

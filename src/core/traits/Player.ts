@@ -1,20 +1,16 @@
-import { Trait } from '../Entity';
+import { Trait } from '../Trait';
 import { Stomper } from '../traits/Stomper';
 
 const COIN_THRESHOLD = 100;
 
 export class Player extends Trait {
-  static readonly NAME = 'player';
-
   name: string;
   coins = 0;
   lives = 4;
   score = 0;
 
-  constructor(name = 'MARIO') {
-    super(Player.NAME);
-    this.name = name;
-
+  constructor() {
+    super();
     this.listen(Stomper.EVENT_STOMP, () => this.score += 100);
   }
 

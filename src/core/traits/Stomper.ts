@@ -1,4 +1,6 @@
-import { Entity, Trait } from '../Entity';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
+import { Killable } from './Killable';
 
 export class Stomper extends Trait {
   static readonly NAME = 'stomper';
@@ -6,17 +8,14 @@ export class Stomper extends Trait {
 
   bounceSpeed = 250;
 
-  constructor() {
-    super(Stomper.NAME);
-  }
-
   bounce(us: Entity, them: Entity) {
     us.bounds.bottom = them.bounds.top;
     us.vel.y = -this.bounceSpeed;
   }
 
   collides(us: Entity, them: Entity) {
-    if (!them.killable|| them.killable.dead) {
+    const killableTrait = them.getTrait(Killable);
+    if (!killableTrait || killableTrait.dead) {
       return;
     }
 

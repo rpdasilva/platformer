@@ -1,18 +1,13 @@
 import { Sides } from '../constants';
-import { Entity, Trait } from '../Entity';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { GameContext } from '../../core/types';
 
 const INITIAL_SPEED = -30;
 
 export class PendulumMove extends Trait {
-  static readonly NAME = 'pendulumMove';
-
   speed = INITIAL_SPEED;
   enabled = true;
-
-  constructor() {
-    super(PendulumMove.NAME);
-  }
 
   update(entity: Entity, { deltaTime }: GameContext) {
     if (this.enabled) {

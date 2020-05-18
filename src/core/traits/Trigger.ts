@@ -1,10 +1,9 @@
-import { Entity, Trait } from '../Entity';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { Level } from '../Level';
 import { GameContext } from '../types';
 
 export class Trigger extends Trait {
-  static readonly NAME = 'trigger';
-
   collisions = new Set<Entity>();
   conditions: ((
     entity: Entity,
@@ -12,10 +11,6 @@ export class Trigger extends Trait {
     gameContext: GameContext,
     level: Level) => void
   )[] = [];
-
-  constructor() {
-    super(Trigger.NAME);
-  }
 
   collides(_: Entity, them: Entity) {
     this.collisions.add(them);

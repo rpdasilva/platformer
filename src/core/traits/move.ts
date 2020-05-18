@@ -1,11 +1,10 @@
 import { Drag } from '../constants';
-import { Entity, Trait } from '../Entity';
-import { Mario } from '../entities/Mario';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { GameContext } from '../types';
+import { Jump } from './Jump';
 
 export class Move extends Trait {
-  static readonly NAME = 'move';
-
   dir = 0;
   acceleration = 400;
   deceleration = 300;
@@ -14,18 +13,14 @@ export class Move extends Trait {
   distance = 0;
   heading = 1;
 
-  constructor() {
-    super(Move.NAME);
-  }
-
-  update(entity: (Entity & Mario), { deltaTime }: GameContext) {
+  update(entity: Entity, { deltaTime }: GameContext) {
     const absX = Math.abs(entity.vel.x);
 
     if (this.dir !== 0) {
       entity.vel.x += this.acceleration * deltaTime * this.dir;
 
-      if (entity.jump) {
-        if (!entity.jump.falling) {
+      if (entity.hasTrait(Jump)) {
+        if (!entity.getTrait(Jump).falling) {
           this.heading = this.dir;
         }
       }

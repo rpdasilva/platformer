@@ -2,8 +2,9 @@ import { loadEntities } from './core/entities';
 import { setupKeyboard } from './core/input';
 import { createLevelLoader } from './core/loaders/level';
 import { loadFont } from './core/loaders/font';
-import { createPlayer, createPlayerEnv } from './core/player';
-import { CompositionScene } from './core/CompositionScene';
+import { makePlayer, createPlayerEnv, findPlayers } from './core/player';
+import { Scene } from './core/Scene';
+import { TimedScene } from './core/TimedScene';
 import { SceneRunner } from './core/SceneRunner';
 import { Level } from './core/Level';
 import { Timer } from './core/Timer';
@@ -15,6 +16,7 @@ import { createDebugCameraLayer } from './lib/debug/layers/camera';
 import { createDebugCollisionLayer } from './lib/debug/layers/collision';
 import { createColourLayer } from './core/layers/colour';
 import { createDashboardLayer } from './core/layers/dashboard';
+import { createTextLayer } from './core/layers/text';
 import { createProgressScreenLayer } from './core/layers/progress-screen';
 
 const main = async (canvas: HTMLCanvasElement, win: Window) => {
@@ -26,11 +28,19 @@ const main = async (canvas: HTMLCanvasElement, win: Window) => {
   const loadLevel = createLevelLoader(entityFactory);
   const sceneRunner = new SceneRunner();
 
-  const mario = createPlayer(entityFactory.mario());
+  const mario = entityFactory.mario();
+  makePlayer(mario, 'MARIO');
 
   const runLevel = async (name: string) => {
+    const loadScene = new Scene();
+    loadScene.comp.addLayer(createColourLayer('#000'));
+    loadScene.comp.addLayer(createTextLayer(font, `Loading ${name}...`));
+    sceneRunner.addScene(loadScene);
+    sceneRunner.runNext();
+
+
     const level = await loadLevel(name);
-    const progressScene = new CompositionScene()
+    const progressScene = new TimedScene();
 
     const dashboardLayer = createDashboardLayer(font, level);
     const progressScreenLayer = createProgressScreenLayer(font, level);
@@ -40,8 +50,7 @@ const main = async (canvas: HTMLCanvasElement, win: Window) => {
       Level.EVENT_TRIGGER,
       (triggerSpec, trigger, collisions) => {
         if (triggerSpec.type === 'goto') {
-          const [gotoTrigger] = [...collisions]
-          .filter(collider => Boolean(collider[Player.NAME]));
+          const [gotoTrigger] = findPlayers(collisions);
 
           if (gotoTrigger) {
             runLevel(triggerSpec.name);
@@ -50,6 +59,7 @@ const main = async (canvas: HTMLCanvasElement, win: Window) => {
       });
 
     mario.pos.set(0, 0);
+    mario.vel.set(0, 0);
     level.entities.add(mario); // Hack to work around entity removal on kill
     level.entities.add(playerEnv);
 
@@ -92,7 +102,7 @@ const main = async (canvas: HTMLCanvasElement, win: Window) => {
 
   timer.start();
 
-  runLevel('debug-progression');
+  runLevel('1-1');
 };
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;

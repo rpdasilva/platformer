@@ -10,7 +10,7 @@ import { GameContext } from './types';
 import { findPlayers } from './player';
 
 const focusPlayer = (level: Level) => {
-  findPlayers(level).forEach(entity => {
+  findPlayers(level.entities).forEach(entity => {
     level.camera.pos.x = Math.max(0, entity.pos.x - 150);
   });
 }

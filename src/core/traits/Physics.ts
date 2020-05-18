@@ -1,14 +1,9 @@
-import { Entity, Trait } from '../Entity';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { Level } from '../Level';
 import { GameContext } from '../../core/types';
 
 export class Physics extends Trait {
-  static readonly NAME = 'physics';
-
-  constructor() {
-    super(Physics.NAME);
-  }
-
   update(entity: Entity, gameContext: GameContext, level: Level) {
     const { deltaTime } = gameContext;
     entity.pos.x += entity.vel.x * deltaTime;

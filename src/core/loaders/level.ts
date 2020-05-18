@@ -6,7 +6,6 @@ import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
 import { LevelTimer } from '../traits/LevelTimer';
 import { Trigger } from '../traits/Trigger';
-import { Player } from '../traits/Player';
 import { Matrix } from '../math';
 import { Patterns, Range, Tile } from '../types';
 import { Level } from '../Level';
@@ -119,25 +118,19 @@ const setupEntities = (
   level.comp.addLayer(spriteLayer);
 }
 
-const createTrigger = () => {
-  const trigger = new (class TriggerEntity extends Entity {});
-  trigger.addTrait(new Trigger());
-
-  return trigger;
-}
-
 const setupTriggers = (levelSpec, level: Level) => {
   const { triggers = [] } = levelSpec;
 
   triggers.forEach(triggerSpec => {
-    const entity = createTrigger();
-    const trigger = entity[Trigger.NAME];
+    const trigger = new Trigger();
 
     trigger.conditions.push(
       (triggerEntity, collisions, gameContext, level) =>
         level.events.emit(Level.EVENT_TRIGGER, triggerSpec, triggerEntity, collisions)
     );
 
+    const entity =  new (class _Entity extends Entity {});
+    entity.addTrait(trigger);
     entity.size.set(64, 64);
     entity.pos.set(triggerSpec.pos[0], triggerSpec.pos[1]);
     level.entities.add(entity);
